@@ -68,17 +68,30 @@ body {
   width: 75%;
 }
 
-.app--start-message {
+.app--start-message,
+.app--end-message {
   width: fit-content;
   margin: 0 auto;
 }
 
-.deck--options {
-  @include flex-container($justify: space-between);
-
+.app--end-message {
   display: none;
+}
 
-  padding: 0 2rem;
+.deck--options {
+  display: none;
+  grid-template-columns: 1fr auto;
+  row-gap: 2rem;
+
+  padding: 0 5rem 0 2rem;
+}
+
+input[value='Start'] {
+  grid-column: 1 / -1;
+  justify-self: center;
+
+  width: 5rem;
+  height: 3rem;
 }
 
 %card {

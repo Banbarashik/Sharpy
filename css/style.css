@@ -49,16 +49,25 @@ body {
 .app--main-area {
   width: 75%; }
 
-.app--start-message {
+.app--start-message,
+.app--end-message {
   width: fit-content;
   margin: 0 auto; }
 
+.app--end-message {
+  display: none; }
+
 .deck--options {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   display: none;
-  padding: 0 2rem; }
+  grid-template-columns: 1fr auto;
+  row-gap: 2rem;
+  padding: 0 5rem 0 2rem; }
+
+input[value='Start'] {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: 5rem;
+  height: 3rem; }
 
 .card, .card--fside, .card--bside {
   width: 100%;

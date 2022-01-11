@@ -2,14 +2,18 @@
 // DOM elements
 const appMainArea = document.querySelector('.app--main-area');
 const startMessage = document.querySelector('.app--start-message');
+const endMessage = document.querySelector('.app--end-message');
 const decksList = document.querySelector('.list-of-decks');
 const deckOptions = document.querySelector('.deck--options');
 const deckLangsOptions = document.querySelector('.deck--languages-options');
 const deckModesList = document.querySelector('.deck--modes-list');
+const btnStart = document.querySelector('input[value="Start"]');
 const card = document.querySelector('.card');
-const btnNextCard = document.querySelector('.btn--next-card');
 
 // Creating DOM elements
+const btnNextCard = document.createElement('button');
+btnNextCard.classList.add('btn--next-card');
+btnNextCard.textContent = 'Next card';
 
 // Constructor for cards
 class Card {
@@ -40,16 +44,28 @@ const hatInTimeDeck = {
   author: 'Lexa',
   languages: ['Russian', 'English', 'Romaji'],
   modes: ['Default', 'Four variants', 'Test mode'],
-  cards: [
-    new Card('Who is the main antagonist?', 'Mustache girl'),
-    new Card('When the game was released?', '2017'),
-    new Card(
-      'What is the maximum number of badges the player can use at the same time?',
-      '3'
-    ),
-  ],
+  cards: {
+    English: [
+      new Card('Who is the main antagonist?', 'Mustache girl'),
+      new Card('When the game was released?', '2017'),
+      new Card(
+        'What is the maximum number of badges the player can use at the same time?',
+        '3'
+      ),
+    ],
+    Russian: [
+      new Card('Кто главный антагонист?', 'Девочка с усами'),
+      new Card('В каком году игра была выпущена?', '2017'),
+      new Card(
+        'Какое максимальное число значков может носить игрок одновременно?',
+        '3'
+      ),
+    ],
+  },
 };
 const decks = [skyrimDeck, hatInTimeDeck];
+
+let curDeck;
 
 decks.forEach(deck => {
   const deckItemEl = document.createElement('li');
@@ -67,20 +83,15 @@ decks.forEach(deck => {
       if (elem === 'input') {
         const id = propValue.replace(' ', '_');
 
-        item.setAttribute('type', 'radio');
-        item.setAttribute('name', 'mode');
-        item.setAttribute('id', id);
-        if (propValue === 'Default') item.setAttribute('checked', '');
-
-        const label = document.createElement('label');
-        label.setAttribute('for', id);
-        label.textContent = propValue;
-
-        const li = document.createElement('li');
-        li.appendChild(item);
-        li.appendChild(label);
-
-        list.appendChild(li);
+        list.insertAdjacentHTML(
+          'beforeend',
+          `<li>
+            <input type="radio" name="mode" id="${id}" ${
+            propValue === 'Default' ? 'checked' : ''
+          }>
+            <label for="${id}">${propValue}</label>
+           </li>`
+        );
       } else {
         item.textContent = propValue;
         list.appendChild(item);
@@ -89,8 +100,17 @@ decks.forEach(deck => {
   };
 
   deckItemEl.addEventListener('click', () => {
-    startMessage.style.display = 'none';
-    deckOptions.style.display = 'flex';
+    curDeck = deck;
+
+    if (curLang) curDeck.cards[curLang].forEach(card => (card.shown = false));
+    console.log(curDeck);
+
+    startMessage.style.display = endMessage.style.display = 'none';
+    deckOptions.style.display = 'grid';
+
+    if (document.querySelector('.card--container')) {
+      appMainArea.removeChild(document.querySelector('.card--container'));
+    }
 
     fillDeckOptions(deck.languages, deckLangsOptions, 'option');
     fillDeckOptions(deck.modes, deckModesList, 'input');
@@ -102,8 +122,12 @@ const displayRandomCard = function (deck) {
   const deckNotShownYet = deck.filter(card => card.shown === false);
 
   if (deckNotShownYet.length === 0) {
-    const deckEndedMessage =
-      'You finished! Want to try again or choose an another deck?';
+    appMainArea.removeChild(document.querySelector('.card--container'));
+    appMainArea.removeChild(btnNextCard);
+
+    endMessage.style.display = 'block';
+
+    return;
   }
 
   const randomCard = Math.floor(Math.random() * deckNotShownYet.length);
@@ -133,4 +157,19 @@ const displayRandomCard = function (deck) {
   );
 };
 
-btnNextCard.addEventListener('click', displayRandomCard.bind(null, deck));
+let curLang;
+
+btnStart.addEventListener('click', e => {
+  e.preventDefault();
+
+  deckOptions.style.display = 'none';
+  appMainArea.appendChild(btnNextCard);
+
+  curLang = document.getElementById('lang').value;
+
+  displayRandomCard(curDeck.cards[curLang]);
+});
+
+btnNextCard.addEventListener('click', () => {
+  displayRandomCard(curDeck.cards[curLang]);
+});
