@@ -1,9 +1,12 @@
 'use strict';
 // DOM elements
 const appMainArea = document.querySelector('.app--main-area');
-
+const startMessage = document.querySelector('.app--start-message');
+const decksList = document.querySelector('.list-of-decks');
+const deckOptions = document.querySelector('.deck--options');
+const deckLangsOptions = document.querySelector('.deck--languages-options');
+const deckModesList = document.querySelector('.deck--modes-list');
 const card = document.querySelector('.card');
-
 const btnNextCard = document.querySelector('.btn--next-card');
 
 // Creating DOM elements
@@ -20,17 +23,79 @@ class Card {
 }
 
 // Array containing all cards
-const testDeck = {
+const skyrimDeck = {
   name: 'Skyrim',
   author: 'Wadim',
-  languages: ['rus', 'eng'],
+  languages: ['Russian', 'English'],
+  modes: ['Default', 'Four variants'],
   cards: [
-    new Card('Who is the best tik-toker?', 'Bonbibonkers'),
-    new Card('When the ECMAScript standard was created?', '1997'),
-    new Card('Who is the best Twitch streamer?', 'Emiru'),
+    new Card('Who is the name of the main character?', 'Dovahkiin'),
+    new Card('When the game was released?', '2011'),
+    new Card('Who is the level cap?', '81'),
   ],
 };
-const decks = [testDeck];
+
+const hatInTimeDeck = {
+  name: 'A Hat in Time',
+  author: 'Lexa',
+  languages: ['Russian', 'English', 'Romaji'],
+  modes: ['Default', 'Four variants', 'Test mode'],
+  cards: [
+    new Card('Who is the main antagonist?', 'Mustache girl'),
+    new Card('When the game was released?', '2017'),
+    new Card(
+      'What is the maximum number of badges the player can use at the same time?',
+      '3'
+    ),
+  ],
+};
+const decks = [skyrimDeck, hatInTimeDeck];
+
+decks.forEach(deck => {
+  const deckItemEl = document.createElement('li');
+  deckItemEl.classList.add('deck--item');
+  decksList.appendChild(deckItemEl);
+
+  deckItemEl.textContent = deck.name.slice(0, 1);
+
+  const fillDeckOptions = function (prop, list, elem) {
+    list.innerHTML = '';
+
+    prop.forEach(propValue => {
+      const item = document.createElement(elem);
+
+      if (elem === 'input') {
+        const id = propValue.replace(' ', '_');
+
+        item.setAttribute('type', 'radio');
+        item.setAttribute('name', 'mode');
+        item.setAttribute('id', id);
+        if (propValue === 'Default') item.setAttribute('checked', '');
+
+        const label = document.createElement('label');
+        label.setAttribute('for', id);
+        label.textContent = propValue;
+
+        const li = document.createElement('li');
+        li.appendChild(item);
+        li.appendChild(label);
+
+        list.appendChild(li);
+      } else {
+        item.textContent = propValue;
+        list.appendChild(item);
+      }
+    });
+  };
+
+  deckItemEl.addEventListener('click', () => {
+    startMessage.style.display = 'none';
+    deckOptions.style.display = 'flex';
+
+    fillDeckOptions(deck.languages, deckLangsOptions, 'option');
+    fillDeckOptions(deck.modes, deckModesList, 'input');
+  });
+});
 
 // Function creating a card HTML element
 const displayRandomCard = function (deck) {

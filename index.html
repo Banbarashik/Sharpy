@@ -11,14 +11,20 @@
   <body>
     <main class="app--container">
       <div class="app--sidebar">
-        <ul class="list-of-decks">
-          <li class="deck-0">Deck 1</li>
-          <li class="deck-1">Deck 2</li>
-          <li class="deck-2">Deck 3</li>
-        </ul>
+        <ul class="list-of-decks"></ul>
       </div>
       <div class="app--main-area">
         <p class="app--start-message">Choose a deck to learn.</p>
+        <form class="deck--options">
+          <div class="deck--language">
+            <label for="lang"><h3>Language</h3></label>
+            <select id="lang" class="deck--languages-options"></select>
+          </div>
+          <div class="deck--mode">
+            <h3>Mode</h3>
+            <ul class="deck--modes-list"></ul>
+          </div>
+        </form>
         <!-- <button class="btn--next-card">Next card</button> -->
       </div>
     </main>

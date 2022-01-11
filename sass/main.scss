@@ -42,10 +42,43 @@ body {
   background-color: #999;
 }
 
-.app--main-area {
-  text-align: center;
+// APP SIDEBAR
+.list-of-decks {
+  @include flex-container;
+  flex-direction: column;
+  gap: 1rem;
+}
 
+.deck--item {
+  @include flex-container;
+
+  width: 8rem;
+  height: 8rem;
+  border-radius: 1.6rem;
+
+  background-color: #000;
+
+  color: #fff;
+
+  cursor: pointer;
+}
+
+// APP MAIN AREA
+.app--main-area {
   width: 75%;
+}
+
+.app--start-message {
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.deck--options {
+  @include flex-container($justify: space-between);
+
+  display: none;
+
+  padding: 0 2rem;
 }
 
 %card {
