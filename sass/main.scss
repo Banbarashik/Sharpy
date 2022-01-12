@@ -32,9 +32,12 @@ body {
 }
 
 .app--container {
-  @include flex-container($justify: space-between);
+  // @include flex-container($justify: space-between);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 5rem;
 
-  width: 70rem;
+  width: 90rem;
   padding: 5rem;
   border-radius: 20px;
   margin: 0 auto;
@@ -44,7 +47,7 @@ body {
 
 // APP SIDEBAR
 .list-of-decks {
-  @include flex-container;
+  display: flex;
   flex-direction: column;
   gap: 1rem;
 }
@@ -65,7 +68,6 @@ body {
 
 // APP MAIN AREA
 .app--main-area {
-  width: 75%;
 }
 
 .app--start-message,
@@ -80,10 +82,9 @@ body {
 
 .deck--options {
   display: none;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 3rem;
   row-gap: 2rem;
-
-  padding: 0 5rem 0 2rem;
 }
 
 input[value='Start'] {
@@ -94,18 +95,58 @@ input[value='Start'] {
   height: 3rem;
 }
 
+// CARDS LIST
 %card {
   width: 100%;
   height: 100%;
-  border-radius: 12px;
+  border-radius: 1.2rem;
+  padding: 2rem;
 }
+%card-fside {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-%cardSides {
+  background-color: #888;
+}
+%card-bside {
+  display: grid;
+  grid-template-areas:
+    'answer picture'
+    '. additional';
+
+  background-color: #ccc;
+}
+%cardFlipSides {
   position: absolute;
   -webkit-backface-visibility: hidden; // Safari
   backface-visibility: hidden;
+}
 
-  padding: 2rem;
+.cards-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  grid-column: 1 / -1;
+  justify-self: center;
+}
+
+.card--sides-block {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 2rem;
+
+  height: 20rem;
+}
+
+.card--fside-separate {
+  @extend %card;
+  @extend %card-fside;
+}
+
+.card--bside-separate {
+  @extend %card;
+  @extend %card-bside;
 }
 
 .card--container {
@@ -121,29 +162,22 @@ input[value='Start'] {
 
 .card {
   @extend %card;
+  padding: 0;
+
   transition: transform 0.6s;
   transform-style: preserve-3d;
 
   &--fside {
-    @include flex-container;
-
     @extend %card;
-    @extend %cardSides;
-
-    background-color: #888;
+    @extend %card-fside;
+    @extend %cardFlipSides;
   }
 
   &--bside {
     @extend %card;
-    @extend %cardSides;
-
-    display: grid;
-    grid-template-areas:
-      'answer picture'
-      '. additional';
+    @extend %card-bside;
+    @extend %cardFlipSides;
 
     transform: rotateY(180deg);
-
-    background-color: #ccc;
   }
 }

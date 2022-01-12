@@ -19,10 +19,10 @@ body {
   font-size: 2.2rem; }
 
 .app--container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 70rem;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 5rem;
+  width: 90rem;
   padding: 5rem;
   border-radius: 20px;
   margin: 0 auto;
@@ -30,8 +30,6 @@ body {
 
 .list-of-decks {
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
   gap: 1rem; }
 
@@ -46,9 +44,6 @@ body {
   color: #fff;
   cursor: pointer; }
 
-.app--main-area {
-  width: 75%; }
-
 .app--start-message,
 .app--end-message {
   width: fit-content;
@@ -59,9 +54,9 @@ body {
 
 .deck--options {
   display: none;
-  grid-template-columns: 1fr auto;
-  row-gap: 2rem;
-  padding: 0 5rem 0 2rem; }
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 3rem;
+  row-gap: 2rem; }
 
 input[value='Start'] {
   grid-column: 1 / -1;
@@ -69,16 +64,40 @@ input[value='Start'] {
   width: 5rem;
   height: 3rem; }
 
-.card, .card--fside, .card--bside {
+.card--fside-separate, .card--bside-separate, .card, .card--fside, .card--bside {
   width: 100%;
   height: 100%;
-  border-radius: 12px; }
+  border-radius: 1.2rem;
+  padding: 2rem; }
+
+.card--fside-separate, .card--fside {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #888; }
+
+.card--bside-separate, .card--bside {
+  display: grid;
+  grid-template-areas: 'answer picture' '. additional';
+  background-color: #ccc; }
 
 .card--fside, .card--bside {
   position: absolute;
   -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  padding: 2rem; }
+  backface-visibility: hidden; }
+
+.cards-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  grid-column: 1 / -1;
+  justify-self: center; }
+
+.card--sides-block {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 2rem;
+  height: 20rem; }
 
 .card--container {
   width: 40rem;
@@ -88,15 +107,8 @@ input[value='Start'] {
     transform: rotateY(180deg); }
 
 .card {
+  padding: 0;
   transition: transform 0.6s;
   transform-style: preserve-3d; }
-  .card--fside {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #888; }
   .card--bside {
-    display: grid;
-    grid-template-areas: 'answer picture' '. additional';
-    transform: rotateY(180deg);
-    background-color: #ccc; }
+    transform: rotateY(180deg); }

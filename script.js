@@ -1,5 +1,6 @@
 'use strict';
 // DOM elements
+const appContainer = document.querySelector('.app--container');
 const appMainArea = document.querySelector('.app--main-area');
 const startMessage = document.querySelector('.app--start-message');
 const endMessage = document.querySelector('.app--end-message');
@@ -14,6 +15,10 @@ const card = document.querySelector('.card');
 const btnNextCard = document.createElement('button');
 btnNextCard.classList.add('btn--next-card');
 btnNextCard.textContent = 'Next card';
+
+// State variables
+let curDeck;
+let curLang;
 
 // Constructor for cards
 class Card {
@@ -72,8 +77,6 @@ const hatInTimeDeck = {
 };
 const decks = [skyrimDeck, hatInTimeDeck];
 
-let curDeck;
-
 decks.forEach(deck => {
   const deckItemEl = document.createElement('li');
   deckItemEl.classList.add('deck--item');
@@ -81,6 +84,7 @@ decks.forEach(deck => {
 
   deckItemEl.textContent = deck.name.slice(0, 1);
 
+  // CREATE DECK'S OPTIONS
   const fillDeckOptions = function (prop, list, elem) {
     list.innerHTML = '';
 
@@ -124,8 +128,31 @@ decks.forEach(deck => {
 
     fillDeckOptions(deck.languages, deckLangsOptions, 'option');
     fillDeckOptions(deck.modes, deckModesList, 'input');
+
+    curLang = document.querySelector('.deck--languages-options').value;
+
+    displayListOfCards();
   });
 });
+
+function displayListOfCards() {
+  const listOfCardsContainer = document.createElement('ul');
+  listOfCardsContainer.classList.add('cards-list-container');
+  appContainer.appendChild(listOfCardsContainer);
+
+  curDeck.cards[curLang].forEach(card => {
+    const cardSidesBlock = `<li class="card--sides-block">
+      <div class="card--fside-separate">
+        <p class="card--fside-q">${card.q}</p>
+      </div>
+      <div class="card--bside-separate">
+        <p class="card--bside-a">${card.a}</p>
+      </div>
+    </li>`;
+
+    listOfCardsContainer.insertAdjacentHTML('beforeend', cardSidesBlock);
+  });
+}
 
 // Function creating a card HTML element
 const displayRandomCard = function (deck) {
@@ -171,15 +198,12 @@ const displayRandomCard = function (deck) {
   );
 };
 
-let curLang;
-
+// START BUTTON
 btnStart.addEventListener('click', e => {
   e.preventDefault();
 
   deckOptions.style.display = 'none';
   appMainArea.appendChild(btnNextCard);
-
-  curLang = document.getElementById('lang').value;
 
   displayRandomCard(curDeck.cards[curLang]);
 });
@@ -187,3 +211,7 @@ btnStart.addEventListener('click', e => {
 btnNextCard.addEventListener('click', () => {
   displayRandomCard(curDeck.cards[curLang]);
 });
+
+document
+  .querySelector('.deck--languages-options')
+  .addEventListener('input', e => (curLang = e.target.value));
