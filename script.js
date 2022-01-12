@@ -106,8 +106,14 @@ decks.forEach(deck => {
     });
   };
 
+  // A DECK LIST ITEM
   deckItemEl.addEventListener('click', () => {
     curDeck = deck;
+
+    if (curLang) curDeck.cards[curLang].forEach(card => (card.shown = false));
+
+    if (document.querySelector('.btn--next-card'))
+      appMainArea.removeChild(btnNextCard);
 
     startMessage.style.display = endMessage.style.display = 'none';
     deckOptions.style.display = 'grid';
@@ -125,6 +131,7 @@ decks.forEach(deck => {
 const displayRandomCard = function (deck) {
   const deckNotShownYet = deck.filter(card => card.shown === false);
 
+  // END OF A DECK
   if (deckNotShownYet.length === 0) {
     appMainArea.removeChild(document.querySelector('.card--container'));
     appMainArea.removeChild(btnNextCard);
