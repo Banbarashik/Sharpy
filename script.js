@@ -31,19 +31,26 @@ const skyrimDeck = {
   name: 'Skyrim',
   author: 'Wadim',
   languages: ['Russian', 'English'],
-  modes: ['Default', 'Four variants'],
-  cards: [
-    new Card('Who is the name of the main character?', 'Dovahkiin'),
-    new Card('When the game was released?', '2011'),
-    new Card('Who is the level cap?', '81'),
-  ],
+  modes: ['Flashcards', 'Multiple choice'],
+  cards: {
+    English: [
+      new Card('What is the name of the main character?', 'Dovahkiin'),
+      new Card('When the game was released?', '2011'),
+      new Card('What is the level cap?', '81'),
+    ],
+    Russian: [
+      new Card('Как зовут главного героя?', 'Довакин'),
+      new Card('В каком году игра была выпущена?', '2011'),
+      new Card('Каков максимальный уровень игрока?', '81'),
+    ],
+  },
 };
 
 const hatInTimeDeck = {
   name: 'A Hat in Time',
   author: 'Lexa',
   languages: ['Russian', 'English', 'Romaji'],
-  modes: ['Default', 'Four variants', 'Test mode'],
+  modes: ['Flashcards', 'Multiple choice', 'Test mode'],
   cards: {
     English: [
       new Card('Who is the main antagonist?', 'Mustache girl'),
@@ -87,7 +94,7 @@ decks.forEach(deck => {
           'beforeend',
           `<li>
             <input type="radio" name="mode" id="${id}" ${
-            propValue === 'Default' ? 'checked' : ''
+            propValue === 'Flashcards' ? 'checked' : ''
           }>
             <label for="${id}">${propValue}</label>
            </li>`
@@ -101,9 +108,6 @@ decks.forEach(deck => {
 
   deckItemEl.addEventListener('click', () => {
     curDeck = deck;
-
-    if (curLang) curDeck.cards[curLang].forEach(card => (card.shown = false));
-    console.log(curDeck);
 
     startMessage.style.display = endMessage.style.display = 'none';
     deckOptions.style.display = 'grid';
@@ -126,6 +130,9 @@ const displayRandomCard = function (deck) {
     appMainArea.removeChild(btnNextCard);
 
     endMessage.style.display = 'block';
+
+    curDeck.cards[curLang].forEach(card => (card.shown = false));
+    curLang = '';
 
     return;
   }
