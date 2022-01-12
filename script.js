@@ -77,6 +77,29 @@ const hatInTimeDeck = {
 };
 const decks = [skyrimDeck, hatInTimeDeck];
 
+const displayListOfCards = function () {
+  const existingList = document.querySelector('.cards-list-container');
+  if (existingList) existingList.remove();
+
+  const listOfCardsContainer = document.createElement('ul');
+  listOfCardsContainer.classList.add('cards-list-container');
+
+  appContainer.appendChild(listOfCardsContainer);
+
+  curDeck.cards[curLang].forEach(card => {
+    const cardSidesBlock = `<li class="card--sides-block">
+      <div class="card--fside-separate">
+        <p class="card--fside-q">${card.q}</p>
+      </div>
+      <div class="card--bside-separate">
+        <p class="card--bside-a">${card.a}</p>
+      </div>
+    </li>`;
+
+    listOfCardsContainer.insertAdjacentHTML('beforeend', cardSidesBlock);
+  });
+};
+
 decks.forEach(deck => {
   const deckItemEl = document.createElement('li');
   deckItemEl.classList.add('deck--item');
@@ -134,25 +157,6 @@ decks.forEach(deck => {
     displayListOfCards();
   });
 });
-
-function displayListOfCards() {
-  const listOfCardsContainer = document.createElement('ul');
-  listOfCardsContainer.classList.add('cards-list-container');
-  appContainer.appendChild(listOfCardsContainer);
-
-  curDeck.cards[curLang].forEach(card => {
-    const cardSidesBlock = `<li class="card--sides-block">
-      <div class="card--fside-separate">
-        <p class="card--fside-q">${card.q}</p>
-      </div>
-      <div class="card--bside-separate">
-        <p class="card--bside-a">${card.a}</p>
-      </div>
-    </li>`;
-
-    listOfCardsContainer.insertAdjacentHTML('beforeend', cardSidesBlock);
-  });
-}
 
 // Function creating a card HTML element
 const displayRandomCard = function (deck) {
