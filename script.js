@@ -65,6 +65,7 @@ const hatInTimeDeck = {
         'What is the maximum number of badges the player can use at the same time?',
         '3'
       ),
+      new Card('What engine does the game utilize?', 'Unreal Engine 3'),
     ],
     Russian: [
       new Card('Кто главный антагонист?', 'Девочка с усами'),
@@ -73,10 +74,166 @@ const hatInTimeDeck = {
         'Какое максимальное число значков может носить игрок одновременно?',
         '3'
       ),
+      new Card('На каком движке создан "A Hat in Time"?', 'Unreal Engine 3'),
     ],
   },
 };
+
 const decks = [skyrimDeck, hatInTimeDeck];
+
+const updateIndices = () =>
+  document
+    .querySelectorAll('.card--btns')
+    .forEach((btn, i) => (btn.dataset.cardI = i));
+
+const disableFirstAndLastBtns = function () {
+  document.querySelectorAll('.card--btns').forEach((btnsBlock, _, arr) => {
+    const cardI = +btnsBlock.dataset.cardI;
+    let btnUp = btnsBlock.firstElementChild;
+    let btnDown = btnsBlock.lastElementChild;
+
+    btnUp.disabled =
+      cardI === 0 ? true : cardI === arr.length - 1 ? false : false;
+    btnDown.disabled =
+      cardI === 0 ? false : cardI === arr.length - 1 ? true : false;
+  });
+};
+
+const makeCardsMovableByBtns = function () {
+  const cardBtnsUp = document.querySelectorAll('.card--btn-up');
+  const cardBtnsDown = document.querySelectorAll('.card--btn-down');
+
+  const moveArrElem = function (arr, fromIndex, toIndex) {
+    const [elem] = arr.splice(fromIndex, 1);
+    arr.splice(toIndex, 0, elem);
+  };
+
+  const setEventListenersToUpDownBtns = function (btns) {
+    btns.forEach(btn => {
+      btn.addEventListener('click', e => {
+        const btnsBlock = e.currentTarget.parentNode;
+        const cardBlock = btnsBlock.parentNode;
+
+        let cardI = +btnsBlock.dataset.cardI;
+        const isBtnUp = btn.classList.contains('card--btn-up');
+
+        moveArrElem(
+          curDeck.cards[curLang],
+          cardI,
+          `${isBtnUp ? --cardI : ++cardI}`
+        );
+
+        if (isBtnUp)
+          cardBlock.previousSibling.insertAdjacentElement(
+            'beforebegin',
+            cardBlock
+          );
+        else cardBlock.nextSibling.insertAdjacentElement('afterend', cardBlock);
+
+        updateIndices();
+        disableFirstAndLastBtns();
+      });
+    });
+  };
+
+  setEventListenersToUpDownBtns(cardBtnsUp);
+  setEventListenersToUpDownBtns(cardBtnsDown);
+
+  updateIndices();
+  disableFirstAndLastBtns();
+};
+
+const cardsDnD = function (ul) {
+  let draggableEl;
+  let indexBefore;
+  let indexAfter;
+  let cardsListArr;
+
+  const getCurrentList = () => (cardsListArr = [...ul.children]);
+  getCurrentList();
+
+  const reorderArray = function (indexBefore, indexAfter) {
+    const [movedCard] = curDeck.cards[curLang].splice(indexBefore, 1);
+    curDeck.cards[curLang].splice(indexAfter, 0, movedCard);
+  };
+
+  cardsListArr.forEach(li => {
+    li.addEventListener('dragstart', e => {
+      draggableEl = e.currentTarget;
+
+      e.dataTransfer.setData('text/plain', null);
+
+      getCurrentList();
+      indexBefore = cardsListArr.indexOf(draggableEl);
+    });
+
+    li.addEventListener('dragover', e => {
+      e.preventDefault();
+
+      const li = e.currentTarget;
+
+      const bounding = e.currentTarget.getBoundingClientRect();
+      const offset = bounding.y + bounding.height / 2;
+
+      if (li !== draggableEl) {
+        li.style.borderTopLeftRadius = '1.3rem';
+        li.style.borderBottomLeftRadius = '1.3rem';
+        if (e.clientY - offset < 0 && li !== draggableEl.nextSibling) {
+          li.style.borderTop = '0.2rem solid rgba(0, 0, 0, 0.8)';
+          li.style.borderBottom = '';
+        } else if (
+          e.clientY - offset > 0 &&
+          li !== draggableEl.previousSibling
+        ) {
+          li.style.borderBottom = '0.2rem solid rgba(0, 0, 0, 0.8)';
+          li.style.borderTop = '';
+        }
+      }
+    });
+
+    li.addEventListener('dragleave', e => {
+      const li = e.currentTarget;
+
+      li.style.borderTop = '';
+      li.style.borderBottom = '';
+    });
+
+    li.addEventListener('drop', e => {
+      e.preventDefault();
+
+      const li = e.currentTarget;
+
+      getCurrentList();
+      indexAfter = cardsListArr.indexOf(li);
+
+      if (li.style.borderBottom !== '')
+        li.parentNode.insertBefore(draggableEl, li.nextSibling);
+      else if (li.style.borderTop !== '')
+        li.parentNode.insertBefore(draggableEl, li);
+      else {
+        return;
+      }
+
+      if (
+        indexAfter - indexBefore !== 1 &&
+        indexAfter > indexBefore &&
+        li.style.borderTop !== ''
+      ) {
+        indexAfter--;
+      } else if (indexAfter < indexBefore && li.style.borderBottom !== '') {
+        indexAfter++;
+      }
+
+      li.style.borderTop = '';
+      li.style.borderBottom = '';
+
+      reorderArray(indexBefore, indexAfter);
+
+      updateIndices();
+      disableFirstAndLastBtns();
+    });
+  });
+};
 
 const displayListOfCards = function () {
   const existingList = document.querySelector('.cards-list-container');
@@ -87,18 +244,41 @@ const displayListOfCards = function () {
 
   appContainer.appendChild(listOfCardsContainer);
 
-  curDeck.cards[curLang].forEach(card => {
-    const cardSidesBlock = `<li class="card--sides-block">
-      <div class="card--fside-separate">
-        <p class="card--fside-q">${card.q}</p>
-      </div>
-      <div class="card--bside-separate">
-        <p class="card--bside-a">${card.a}</p>
-      </div>
-    </li>`;
+  curDeck.cards[curLang].forEach(card =>
+    listOfCardsContainer.insertAdjacentHTML(
+      'beforeend',
+      `<li class="card--sides-block" draggable="true">
+        <div class="card--fside-separate">
+          <p class="card--fside-q">${card.q}</p>
+        </div>
+        <div class="card--bside-separate">
+          <p class="card--bside-a">${card.a}</p>
+        </div>
+        <div class="card--btns">
+          <button class="card--btn-up">
+            <svg xmlns="http://www.w3.org/2000/svg"
+            class="ionicon" viewBox="0 0 512 512">
+            <title>Chevron Up</title>
+            <path fill="none" stroke="currentColor"
+            stroke-linecap="round" stroke-linejoin="round"
+            stroke-width="48" d="M112 328l144-144 144 144"/>
+            </svg>
+          </button>
+          <button class="card--btn-down">
+            <svg xmlns="http://www.w3.org/2000/svg"
+            class="ionicon" viewBox="0 0 512 512">
+            <title>Chevron Down</title>
+            <path fill="none" stroke="currentColor"
+            stroke-linecap="round" stroke-linejoin="round"
+            stroke-width="48" d="M112 184l144 144 144-144"/>
+            </svg>
+          </button>
+        </div>
+       </li>`
+    )
+  );
 
-    listOfCardsContainer.insertAdjacentHTML('beforeend', cardSidesBlock);
-  });
+  cardsDnD(listOfCardsContainer);
 };
 
 decks.forEach(deck => {
@@ -156,6 +336,7 @@ decks.forEach(deck => {
     curLang = document.querySelector('.deck--languages-options').value;
 
     displayListOfCards();
+    makeCardsMovableByBtns();
   });
 });
 
@@ -218,15 +399,18 @@ const displayCard = function (deck) {
 btnStart.addEventListener('click', e => {
   e.preventDefault();
 
+  document.querySelector('.cards-list-container').remove();
+
   deckOptions.style.display = 'none';
+
   appMainArea.appendChild(btnNextCard);
 
   displayCard(curDeck.cards[curLang]);
 });
 
-btnNextCard.addEventListener('click', () => {
-  displayCard(curDeck.cards[curLang]);
-});
+btnNextCard.addEventListener('click', () =>
+  displayCard(curDeck.cards[curLang])
+);
 
 document
   .querySelector('.deck--languages-options')
@@ -234,6 +418,7 @@ document
     curLang = e.target.value;
 
     displayListOfCards();
+    makeCardsMovableByBtns();
   });
 
 document

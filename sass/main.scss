@@ -8,6 +8,22 @@
   align-items: $align;
 }
 
+@mixin scrollbars($size: 1rem, $color: rgba(0, 0, 0, 0.3)) {
+  &::-webkit-scrollbar {
+    width: $size;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $color;
+    border-radius: 1rem;
+  }
+
+  scrollbar-color: $color transparent;
+  scrollbar-width: thin;
+
+  scrollbar-gutter: stable;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -124,17 +140,26 @@ input[value='Start'] {
 }
 
 .cards-list-container {
+  @include scrollbars();
+
   display: flex;
   flex-direction: column;
   gap: 2rem;
   grid-column: 1 / -1;
   justify-self: center;
+
+  width: 100%;
+  height: 50rem;
+  padding-right: 2rem;
+
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .card--sides-block {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  column-gap: 2rem;
+  display: flex;
+  gap: 2rem;
+  flex-shrink: 0;
 
   height: 20rem;
 }
@@ -147,6 +172,8 @@ input[value='Start'] {
 .card--bside-separate {
   @extend %card;
   @extend %card-bside;
+
+  position: relative;
 }
 
 .card--container {
@@ -180,4 +207,62 @@ input[value='Start'] {
 
     transform: rotateY(180deg);
   }
+}
+
+.card--btns {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  width: 10rem;
+}
+
+%btn {
+  height: 4rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.card--btn-up {
+  @extend %btn;
+
+  position: relative;
+}
+
+.card--btn-down {
+  @extend %btn;
+}
+
+@mixin border-hiding-pseudo-elements($x, $x_value, $y, $y_value, $transform) {
+  content: '';
+  position: absolute;
+  #{$x}: $x_value;
+  #{$y}: $y_value;
+  transform: $transform;
+
+  height: 0.2rem;
+  width: 7rem;
+
+  background-color: #999;
+}
+
+.card--btn-up::after {
+  @include border-hiding-pseudo-elements(
+    left,
+    -2.7rem,
+    top,
+    0,
+    translateY(-100%)
+  );
+}
+
+.card--bside-separate::after {
+  @include border-hiding-pseudo-elements(
+    right,
+    0.8rem,
+    bottom,
+    -0.2rem,
+    translateX(100%)
+  );
 }
