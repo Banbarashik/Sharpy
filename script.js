@@ -19,7 +19,7 @@ btnNextCard.textContent = 'Next card';
 // State variables
 let curDeck;
 let curLang;
-let order = 'original';
+let order = 'random';
 
 // Constructor for cards
 class Card {
@@ -235,3 +235,9 @@ document
 
     displayListOfCards();
   });
+
+document
+  .getElementsByName('order')
+  .forEach(input =>
+    input.addEventListener('input', e => (order = e.target.value))
+  );
