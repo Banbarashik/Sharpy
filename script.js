@@ -19,6 +19,7 @@ btnNextCard.textContent = 'Next card';
 // State variables
 let curDeck;
 let curLang;
+let order = 'original';
 
 // Constructor for cards
 class Card {
@@ -175,26 +176,37 @@ const displayRandomCard = function (deck) {
     return;
   }
 
-  const randomCard = Math.floor(Math.random() * deckNotShownYet.length);
-  deckNotShownYet[randomCard].shown = true;
+  const generateBlock = function (card) {
+    appMainArea.insertAdjacentHTML(
+      'afterbegin',
+      `<div class="card--container">
+          <article class="card">
+            <div class="card--fside">
+              <p class="card--fside-q">${deckNotShownYet[card].q}</p>
+            </div>
+            <div class="card--bside">
+              <p class="card--bside-a">${deckNotShownYet[card].a}</p>
+            </div>
+          </article>
+         </div>`
+    );
+
+    deckNotShownYet[card].shown = true;
+  };
 
   if (document.querySelector('.card--container')) {
     appMainArea.removeChild(document.querySelector('.card--container'));
   }
 
-  appMainArea.insertAdjacentHTML(
-    'afterbegin',
-    `<div class="card--container">
-      <article class="card">
-        <div class="card--fside">
-          <p class="card--fside-q">${deckNotShownYet[randomCard].q}</p>
-        </div>
-        <div class="card--bside">
-          <p class="card--bside-a">${deckNotShownYet[randomCard].a}</p>
-        </div>
-      </article>
-     </div>`
-  );
+  if (order === 'random') {
+    const randomCard = Math.floor(Math.random() * deckNotShownYet.length);
+    generateBlock(randomCard);
+  } else if (order === 'original') {
+    let i;
+    if (i === undefined) i = 0;
+    else i++;
+    generateBlock(i);
+  }
 
   const cardContainer = document.querySelector('.card--container');
   cardContainer.addEventListener('click', () =>
