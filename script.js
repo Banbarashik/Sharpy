@@ -160,7 +160,7 @@ decks.forEach(deck => {
 });
 
 // Function creating a card HTML element
-const displayRandomCard = function (deck) {
+const displayCard = function (deck) {
   const deckNotShownYet = deck.filter(card => card.shown === false);
 
   // END OF A DECK
@@ -176,7 +176,7 @@ const displayRandomCard = function (deck) {
     return;
   }
 
-  const generateBlock = function (card) {
+  const generateCardEl = function (card) {
     appMainArea.insertAdjacentHTML(
       'afterbegin',
       `<div class="card--container">
@@ -188,7 +188,7 @@ const displayRandomCard = function (deck) {
               <p class="card--bside-a">${deckNotShownYet[card].a}</p>
             </div>
           </article>
-         </div>`
+       </div>`
     );
 
     deckNotShownYet[card].shown = true;
@@ -200,12 +200,12 @@ const displayRandomCard = function (deck) {
 
   if (order === 'random') {
     const randomCard = Math.floor(Math.random() * deckNotShownYet.length);
-    generateBlock(randomCard);
+    generateCardEl(randomCard);
   } else if (order === 'original') {
     let i;
     if (i === undefined) i = 0;
     else i++;
-    generateBlock(i);
+    generateCardEl(i);
   }
 
   const cardContainer = document.querySelector('.card--container');
@@ -221,11 +221,11 @@ btnStart.addEventListener('click', e => {
   deckOptions.style.display = 'none';
   appMainArea.appendChild(btnNextCard);
 
-  displayRandomCard(curDeck.cards[curLang]);
+  displayCard(curDeck.cards[curLang]);
 });
 
 btnNextCard.addEventListener('click', () => {
-  displayRandomCard(curDeck.cards[curLang]);
+  displayCard(curDeck.cards[curLang]);
 });
 
 document
