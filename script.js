@@ -218,4 +218,8 @@ btnNextCard.addEventListener('click', () => {
 
 document
   .querySelector('.deck--languages-options')
-  .addEventListener('input', e => (curLang = e.target.value));
+  .addEventListener('input', e => {
+    curLang = e.target.value;
+
+    displayListOfCards();
+  });
