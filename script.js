@@ -18,7 +18,7 @@ btnNextCard.textContent = 'Next card';
 
 // State variables
 let curDeck;
-let curLang;
+// let curLang;
 let order = 'random';
 
 // Constructor for cards
@@ -118,7 +118,7 @@ const makeCardsMovableByBtns = function () {
         const isBtnUp = btn.classList.contains('card--btn-up');
 
         moveArrElem(
-          curDeck.cards[curLang],
+          curDeck.cards[curDeck.curLang],
           cardI,
           `${isBtnUp ? --cardI : ++cardI}`
         );
@@ -153,8 +153,8 @@ const cardsDnD = function (ul) {
   getCurrentList();
 
   const reorderArray = function (indexBefore, indexAfter) {
-    const [movedCard] = curDeck.cards[curLang].splice(indexBefore, 1);
-    curDeck.cards[curLang].splice(indexAfter, 0, movedCard);
+    const [movedCard] = curDeck.cards[curDeck.curLang].splice(indexBefore, 1);
+    curDeck.cards[curDeck.curLang].splice(indexAfter, 0, movedCard);
   };
 
   cardsListArr.forEach(li => {
@@ -244,7 +244,7 @@ const displayListOfCards = function () {
 
   appContainer.appendChild(listOfCardsContainer);
 
-  curDeck.cards[curLang].forEach(card =>
+  curDeck.cards[curDeck.curLang].forEach(card =>
     listOfCardsContainer.insertAdjacentHTML(
       'beforeend',
       `<li class="card--sides-block" draggable="true">
@@ -318,7 +318,8 @@ decks.forEach(deck => {
   deckItemEl.addEventListener('click', () => {
     curDeck = deck;
 
-    if (curLang) curDeck.cards[curLang].forEach(card => (card.shown = false));
+    if (curDeck.curLang)
+      curDeck.cards[curDeck.curLang].forEach(card => (card.shown = false));
 
     if (document.querySelector('.btn--next-card'))
       appMainArea.removeChild(btnNextCard);
@@ -333,7 +334,9 @@ decks.forEach(deck => {
     fillDeckOptions(deck.languages, deckLangsOptions, 'option');
     fillDeckOptions(deck.modes, deckModesList, 'input');
 
-    curLang = document.querySelector('.deck--languages-options').value;
+    const langOpt = document.querySelector('.deck--languages-options');
+    curDeck.curLang = curDeck.curLang ? curDeck.curLang : langOpt.value;
+    langOpt.value = curDeck.curLang;
 
     displayListOfCards();
     makeCardsMovableByBtns();
@@ -351,8 +354,8 @@ const displayCard = function (deck) {
 
     endMessage.style.display = 'block';
 
-    curDeck.cards[curLang].forEach(card => (card.shown = false));
-    curLang = '';
+    curDeck.cards[curDeck.curLang].forEach(card => (card.shown = false));
+    // curLang = '';
 
     return;
   }
@@ -405,17 +408,17 @@ btnStart.addEventListener('click', e => {
 
   appMainArea.appendChild(btnNextCard);
 
-  displayCard(curDeck.cards[curLang]);
+  displayCard(curDeck.cards[curDeck.curLang]);
 });
 
 btnNextCard.addEventListener('click', () =>
-  displayCard(curDeck.cards[curLang])
+  displayCard(curDeck.cards[curDeck.curLang])
 );
 
 document
   .querySelector('.deck--languages-options')
   .addEventListener('input', e => {
-    curLang = e.target.value;
+    curDeck.curLang = e.target.value;
 
     displayListOfCards();
     makeCardsMovableByBtns();
