@@ -266,3 +266,19 @@ input[value='Start'] {
     translateX(100%)
   );
 }
+
+.deck--create {
+  display: none;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.deck--err-message {
+  display: none;
+}
+
+.card--create {
+  display: none;
+  flex-direction: column;
+  gap: 1rem;
+}

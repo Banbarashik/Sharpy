@@ -11,7 +11,9 @@
   <body>
     <main class="app--container">
       <div class="app--sidebar">
-        <ul class="list-of-decks"></ul>
+        <ul class="list-of-decks">
+          <li class="deck--item deck--item-create">C</li>
+        </ul>
       </div>
       <div class="app--main-area">
         <p class="app--start-message">Choose a deck to learn.</p>
@@ -50,6 +52,54 @@
           </div>
           <input type="submit" value="Start" />
         </form>
+
+        <!-- DECK -->
+        <form class="deck--create">
+          <p>Deck</p>
+          <ul>
+            <li>
+              <label for="deck_name">Name:</label>
+              <input type="text" id="deck_name" />
+            </li>
+            <li>
+              <label for="deck_author">Author:</label>
+              <input type="text" id="deck_author" />
+            </li>
+            <li>
+              <label for="deck_lang">Language:</label>
+              <input type="text" id="deck_lang" />
+            </li>
+            <input
+              type="submit"
+              class="deck--create-btn"
+              value="Create a new deck"
+            />
+          </ul>
+          <p class="deck--err-message">You should fill all the fields</p>
+        </form>
+
+        <form class="card--create">
+          <p>Cards</p>
+          <ul>
+            <li>
+              <input type="text" class="card-q" />
+            </li>
+            <li>
+              <input type="text" class="card-a" />
+              <input
+                type="url"
+                class="card-img"
+                placeholder="https://imgur.com"
+              />
+            </li>
+          </ul>
+          <input
+            type="submit"
+            class="deck--add-card-btn"
+            value="Add a new card"
+          />
+        </form>
+
         <p class="app--end-message">
           You finished! Want to try again or choose an another deck?
         </p>

@@ -21,7 +21,17 @@ let curDeck;
 // let curLang;
 let order = 'random';
 
-// Constructor for cards
+class Deck {
+  constructor(name, author, languages) {
+    this.name = name;
+    this.author = author;
+    this.languages = languages;
+    this.modes = ['Flashcards', 'Multiple choice'];
+    this.cards = {};
+    this.curLang = null;
+  }
+}
+
 class Card {
   constructor(q, a, img) {
     this.q = q;
@@ -32,53 +42,39 @@ class Card {
   }
 }
 
+const skyrimDeck = new Deck('Skyrim', 'Wadim', ['Russian', 'English']);
+skyrimDeck.cards.english = [
+  new Card('What is the name of the main character?', 'Dovahkiin'),
+  new Card('When the game was released?', '2011'),
+  new Card('What is the level cap?', '81'),
+];
+skyrimDeck.cards.russian = [
+  new Card('Как зовут главного героя?', 'Довакин'),
+  new Card('В каком году игра была выпущена?', '2011'),
+  new Card('Каков максимальный уровень игрока?', '81'),
+];
+
+const hatInTimeDeck = new Deck('A Hat in Time', 'Lexa', ['Russian', 'English']);
+hatInTimeDeck.cards.english = [
+  new Card('Who is the main antagonist?', 'Mustache girl'),
+  new Card('When the game was released?', '2017'),
+  new Card(
+    'What is the maximum number of badges the player can use at the same time?',
+    '3'
+  ),
+  new Card('What engine does the game utilize?', 'Unreal Engine 3'),
+];
+hatInTimeDeck.cards.russian = [
+  new Card('Кто главный антагонист?', 'Девочка с усами'),
+  new Card('В каком году игра была выпущена?', '2017'),
+  new Card(
+    'Какое максимальное число значков может носить игрок одновременно?',
+    '3'
+  ),
+  new Card('На каком движке создан "A Hat in Time"?', 'Unreal Engine 3'),
+];
+
 // Array containing all cards
-const skyrimDeck = {
-  name: 'Skyrim',
-  author: 'Wadim',
-  languages: ['Russian', 'English'],
-  modes: ['Flashcards', 'Multiple choice'],
-  cards: {
-    English: [
-      new Card('What is the name of the main character?', 'Dovahkiin'),
-      new Card('When the game was released?', '2011'),
-      new Card('What is the level cap?', '81'),
-    ],
-    Russian: [
-      new Card('Как зовут главного героя?', 'Довакин'),
-      new Card('В каком году игра была выпущена?', '2011'),
-      new Card('Каков максимальный уровень игрока?', '81'),
-    ],
-  },
-};
-
-const hatInTimeDeck = {
-  name: 'A Hat in Time',
-  author: 'Lexa',
-  languages: ['Russian', 'English', 'Romaji'],
-  modes: ['Flashcards', 'Multiple choice', 'Test mode'],
-  cards: {
-    English: [
-      new Card('Who is the main antagonist?', 'Mustache girl'),
-      new Card('When the game was released?', '2017'),
-      new Card(
-        'What is the maximum number of badges the player can use at the same time?',
-        '3'
-      ),
-      new Card('What engine does the game utilize?', 'Unreal Engine 3'),
-    ],
-    Russian: [
-      new Card('Кто главный антагонист?', 'Девочка с усами'),
-      new Card('В каком году игра была выпущена?', '2017'),
-      new Card(
-        'Какое максимальное число значков может носить игрок одновременно?',
-        '3'
-      ),
-      new Card('На каком движке создан "A Hat in Time"?', 'Unreal Engine 3'),
-    ],
-  },
-};
-
 const decks = [skyrimDeck, hatInTimeDeck];
 
 const updateIndices = () =>
@@ -310,6 +306,8 @@ decks.forEach(deck => {
       } else {
         item.textContent = propValue;
         list.appendChild(item);
+        // if (list.value === '') list.value = item;
+        // if value === '', assign it as a value
       }
     });
   };
@@ -335,8 +333,10 @@ decks.forEach(deck => {
     fillDeckOptions(deck.modes, deckModesList, 'input');
 
     const langOpt = document.querySelector('.deck--languages-options');
-    curDeck.curLang = curDeck.curLang ? curDeck.curLang : langOpt.value;
-    langOpt.value = curDeck.curLang;
+    curDeck.curLang = curDeck.curLang
+      ? curDeck.curLang
+      : langOpt.value.toLowerCase();
+    langOpt.value = capitalizeFirstLetter(curDeck.curLang);
 
     displayListOfCards();
     makeCardsMovableByBtns();
@@ -355,7 +355,6 @@ const displayCard = function (deck) {
     endMessage.style.display = 'block';
 
     curDeck.cards[curDeck.curLang].forEach(card => (card.shown = false));
-    // curLang = '';
 
     return;
   }
@@ -418,7 +417,7 @@ btnNextCard.addEventListener('click', () =>
 document
   .querySelector('.deck--languages-options')
   .addEventListener('input', e => {
-    curDeck.curLang = e.target.value;
+    curDeck.curLang = e.target.value.toLowerCase();
 
     displayListOfCards();
     makeCardsMovableByBtns();
@@ -429,3 +428,63 @@ document
   .forEach(input =>
     input.addEventListener('input', e => (order = e.target.value))
   );
+
+const createNewDeckIcon = document.querySelector('.deck--item-create');
+createNewDeckIcon.addEventListener('click', () => {
+  let newDeck = {
+    cards: {},
+  };
+
+  // DECK
+  const deckCreateWindow = document.querySelector('.deck--create');
+  const newDeckName = document.getElementById('deck_name');
+  const newDeckAuthor = document.getElementById('deck_author');
+  const newDeckLang = document.getElementById('deck_lang');
+  const errMessage = document.querySelector('.deck--err-message');
+  const createNewDeckBtn = document.querySelector('.deck--create-btn');
+
+  // CARD
+  const cardCreateWindow = document.querySelector('.card--create');
+  const q = document.querySelector('.card-q');
+  const a = document.querySelector('.card-a');
+  const img = document.querySelector('.card-img');
+  const addCardBtn = document.querySelector('.deck--add-card-btn');
+
+  deckCreateWindow.style.display = 'flex';
+
+  createNewDeckBtn.addEventListener('click', e => {
+    e.preventDefault();
+
+    if (
+      newDeckName.value === '' ||
+      newDeckAuthor.value === '' ||
+      newDeckLang.value === ''
+    ) {
+      errMessage.style.display = 'block';
+      return false;
+    }
+
+    newDeck.name = newDeckName.value;
+    newDeck.author = newDeckAuthor.value;
+    newDeck.languages = [newDeckLang.value];
+    newDeck.cards[newDeckLang.value] = [];
+
+    decks.push(newDeck);
+
+    deckCreateWindow.style.display = 'none';
+    cardCreateWindow.style.display = 'flex';
+
+    addCardBtn.addEventListener('click', e => {
+      e.preventDefault();
+
+      newDeck.cards[newDeckLang.value].push(
+        new Card(q.value, a.value, img.value)
+      );
+      console.log(newDeck);
+    });
+  });
+});
+
+function capitalizeFirstLetter(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
