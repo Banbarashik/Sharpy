@@ -431,10 +431,6 @@ document
 
 const createNewDeckIcon = document.querySelector('.deck--item-create');
 createNewDeckIcon.addEventListener('click', () => {
-  let newDeck = {
-    cards: {},
-  };
-
   // DECK
   const deckCreateWindow = document.querySelector('.deck--create');
   const newDeckName = document.getElementById('deck_name');
@@ -464,10 +460,10 @@ createNewDeckIcon.addEventListener('click', () => {
       return false;
     }
 
-    newDeck.name = newDeckName.value;
-    newDeck.author = newDeckAuthor.value;
-    newDeck.languages = [newDeckLang.value];
-    newDeck.cards[newDeckLang.value] = [];
+    const newDeck = new Deck(newDeckName.value, newDeckAuthor.value, [
+      newDeckLang.value,
+    ]);
+    newDeck.cards[newDeckLang.value.toLowerCase()] = [];
 
     decks.push(newDeck);
 
@@ -477,7 +473,7 @@ createNewDeckIcon.addEventListener('click', () => {
     addCardBtn.addEventListener('click', e => {
       e.preventDefault();
 
-      newDeck.cards[newDeckLang.value].push(
+      newDeck.cards[newDeckLang.value.toLowerCase()].push(
         new Card(q.value, a.value, img.value)
       );
       console.log(newDeck);
