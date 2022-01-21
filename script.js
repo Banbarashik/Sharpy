@@ -11,6 +11,7 @@ const deckModesList = document.querySelector('.deck--modes-list');
 const btnStart = document.querySelector('input[value="Start"]');
 const card = document.querySelector('.card');
 const createNewDeckIcon = document.querySelector('.deck--item-create');
+const createNewCardWindow = document.querySelector('.card--create');
 
 // Creating DOM elements
 const btnNextCard = document.createElement('button');
@@ -97,6 +98,7 @@ const openDeckWindow = function (e, deck) {
     appMainArea.removeChild(document.querySelector('.card--container'));
   }
 
+  createNewCardWindow.style.display = 'none';
   document.querySelector('.deck--create').style.display = 'none';
 
   startMessage.style.display = endMessage.style.display = 'none';
@@ -463,13 +465,19 @@ document
   const viewCreatedDeck = document.querySelector('.card--view-created-deck');
 
   let newDeck;
+  let lang;
 
   createNewDeckIcon.addEventListener('click', () => {
     deckOptions.style.display = 'none';
     if (document.querySelector('.cards-list-container'))
       document.querySelector('.cards-list-container').remove();
 
+    startMessage.style.display = 'none';
+    createNewCardWindow.style.display = 'none';
+
     deckCreateWindow.style.display = 'flex';
+
+    newDeckName.focus();
   });
 
   createNewDeckBtn.addEventListener('click', e => {
@@ -484,11 +492,11 @@ document
       return false;
     }
 
-    newDeck = new Deck(newDeckName.value, newDeckAuthor.value, [
-      newDeckLang.value,
-    ]);
-    newDeck.curLang = newDeckLang.value.toLowerCase();
-    newDeck.cards[newDeckLang.value.toLowerCase()] = [];
+    lang = newDeckLang.value;
+
+    newDeck = new Deck(newDeckName.value, newDeckAuthor.value, [lang]);
+    newDeck.curLang = lang.toLowerCase();
+    newDeck.cards[lang.toLowerCase()] = [];
 
     decks.push(newDeck);
 
@@ -496,14 +504,20 @@ document
     cardCreateWindow.style.display = 'flex';
 
     initDeck();
+
+    q.focus();
+
+    newDeckName.value = newDeckAuthor.value = newDeckLang.value = '';
   });
 
   addCardBtn.addEventListener('click', e => {
     e.preventDefault();
 
-    newDeck.cards[newDeckLang.value.toLowerCase()].push(
-      new Card(q.value, a.value, img.value)
+    newDeck.cards[lang.toLowerCase()].push(
+      new Card(q.textContent, a.value, img.value)
     );
+
+    q.textContent = a.value = img.value = '';
   });
 
   viewCreatedDeck.addEventListener('click', e => {

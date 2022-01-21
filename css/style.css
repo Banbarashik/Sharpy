@@ -1,6 +1,13 @@
 :root {
   --bg-color: rgb(195, 195, 191); }
 
+[contenteditable='true']:empty:before {
+  content: attr(placeholder);
+  pointer-events: none;
+  display: block;
+  /* For Firefox */
+  opacity: 0.3; }
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -176,3 +183,26 @@ input[value='Start'] {
   display: none;
   flex-direction: column;
   gap: 1rem; }
+
+.card--create--cards-block {
+  display: flex;
+  gap: 2rem; }
+  .card--create--cards-block .card--fside-separate,
+  .card--create--cards-block .card--bside-separate {
+    width: 50%;
+    height: 20rem; }
+    .card--create--cards-block .card--fside-separate input,
+    .card--create--cards-block .card--bside-separate input {
+      background-color: transparent;
+      border: none;
+      outline: none;
+      font-size: inherit; }
+  .card--create--cards-block .card-q {
+    text-align: center;
+    resize: none;
+    width: 28rem;
+    outline: none; }
+  .card--create--cards-block .card--bside-separate {
+    align-items: start; }
+    .card--create--cards-block .card--bside-separate input {
+      width: 10rem; }

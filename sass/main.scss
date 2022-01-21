@@ -24,6 +24,13 @@
   scrollbar-gutter: stable;
 }
 
+[contenteditable='true']:empty:before {
+  content: attr(placeholder);
+  pointer-events: none;
+  display: block; /* For Firefox */
+  opacity: 0.3;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -281,4 +288,37 @@ input[value='Start'] {
   display: none;
   flex-direction: column;
   gap: 1rem;
+}
+
+.card--create--cards-block {
+  display: flex;
+  gap: 2rem;
+
+  .card--fside-separate,
+  .card--bside-separate {
+    width: 50%;
+    height: 20rem;
+
+    input {
+      background-color: transparent;
+      border: none;
+      outline: none;
+      font-size: inherit;
+    }
+  }
+
+  .card-q {
+    text-align: center;
+    resize: none;
+    width: 28rem;
+    outline: none;
+  }
+
+  .card--bside-separate {
+    align-items: start;
+
+    input {
+      width: 10rem;
+    }
+  }
 }
