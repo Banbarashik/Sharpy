@@ -78,6 +78,65 @@ hatInTimeDeck.cards.russian = [
 // Array containing all cards
 const decks = [skyrimDeck, hatInTimeDeck];
 
+function capitalizeFirstLetter(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+const openDeckWindow = function (e, deck) {
+  e.preventDefault();
+
+  curDeck = deck;
+
+  if (deck.curLang)
+    deck.cards[deck.curLang].forEach(card => (card.shown = false));
+
+  if (document.querySelector('.btn--next-card'))
+    appMainArea.removeChild(btnNextCard);
+
+  startMessage.style.display = endMessage.style.display = 'none';
+  deckOptions.style.display = 'grid';
+
+  if (document.querySelector('.card--container')) {
+    appMainArea.removeChild(document.querySelector('.card--container'));
+  }
+
+  fillDeckOptions(deck.languages, deckLangsOptions, 'option');
+  fillDeckOptions(deck.modes, deckModesList, 'input');
+
+  const langOpt = document.querySelector('.deck--languages-options');
+  deck.curLang = deck.curLang ? deck.curLang : langOpt.value.toLowerCase();
+  langOpt.value = capitalizeFirstLetter(deck.curLang);
+
+  displayListOfCards();
+  makeCardsMovableByBtns();
+};
+
+// CREATE DECK'S OPTIONS
+const fillDeckOptions = function (prop, list, elem) {
+  list.innerHTML = '';
+
+  prop.forEach(propValue => {
+    const item = document.createElement(elem);
+
+    if (elem === 'input') {
+      const id = propValue.replace(' ', '_');
+
+      list.insertAdjacentHTML(
+        'beforeend',
+        `<li>
+            <input type="radio" name="mode" id="${id}" ${
+          propValue === 'Flashcards' ? 'checked' : ''
+        }>
+            <label for="${id}">${propValue}</label>
+           </li>`
+      );
+    } else {
+      item.textContent = propValue;
+      list.appendChild(item);
+    }
+  });
+};
+
 const updateIndices = () =>
   document
     .querySelectorAll('.card--btns')
@@ -278,32 +337,6 @@ const displayListOfCards = function () {
   cardsDnD(listOfCardsContainer);
 };
 
-// CREATE DECK'S OPTIONS
-const fillDeckOptions = function (prop, list, elem) {
-  list.innerHTML = '';
-
-  prop.forEach(propValue => {
-    const item = document.createElement(elem);
-
-    if (elem === 'input') {
-      const id = propValue.replace(' ', '_');
-
-      list.insertAdjacentHTML(
-        'beforeend',
-        `<li>
-            <input type="radio" name="mode" id="${id}" ${
-          propValue === 'Flashcards' ? 'checked' : ''
-        }>
-            <label for="${id}">${propValue}</label>
-           </li>`
-      );
-    } else {
-      item.textContent = propValue;
-      list.appendChild(item);
-    }
-  });
-};
-
 const initDeck = function () {
   while (!decksList.lastElementChild.classList.contains('deck--item-create')) {
     decksList.removeChild(decksList.lastElementChild);
@@ -317,34 +350,7 @@ const initDeck = function () {
     deckItemEl.textContent = deck.name.slice(0, 1);
 
     // A DECK LIST ITEM
-    deckItemEl.addEventListener('click', () => {
-      curDeck = deck;
-
-      if (curDeck.curLang)
-        curDeck.cards[curDeck.curLang].forEach(card => (card.shown = false));
-
-      if (document.querySelector('.btn--next-card'))
-        appMainArea.removeChild(btnNextCard);
-
-      startMessage.style.display = endMessage.style.display = 'none';
-      deckOptions.style.display = 'grid';
-
-      if (document.querySelector('.card--container')) {
-        appMainArea.removeChild(document.querySelector('.card--container'));
-      }
-
-      fillDeckOptions(deck.languages, deckLangsOptions, 'option');
-      fillDeckOptions(deck.modes, deckModesList, 'input');
-
-      const langOpt = document.querySelector('.deck--languages-options');
-      curDeck.curLang = curDeck.curLang
-        ? curDeck.curLang
-        : langOpt.value.toLowerCase();
-      langOpt.value = capitalizeFirstLetter(curDeck.curLang);
-
-      displayListOfCards();
-      makeCardsMovableByBtns();
-    });
+    deckItemEl.addEventListener('click', e => openDeckWindow(e, deck));
   });
 };
 
@@ -496,39 +502,7 @@ document
   });
 
   viewCreatedDeck.addEventListener('click', e => {
-    e.preventDefault();
-
+    openDeckWindow(e, newDeck);
     cardCreateWindow.style.display = 'none';
-
-    curDeck = newDeck;
-
-    if (curDeck.curLang)
-      curDeck.cards[curDeck.curLang].forEach(card => (card.shown = false));
-
-    if (document.querySelector('.btn--next-card'))
-      appMainArea.removeChild(btnNextCard);
-
-    startMessage.style.display = endMessage.style.display = 'none';
-    deckOptions.style.display = 'grid';
-
-    if (document.querySelector('.card--container')) {
-      appMainArea.removeChild(document.querySelector('.card--container'));
-    }
-
-    fillDeckOptions(curDeck.languages, deckLangsOptions, 'option');
-    fillDeckOptions(curDeck.modes, deckModesList, 'input');
-
-    const langOpt = document.querySelector('.deck--languages-options');
-    curDeck.curLang = curDeck.curLang
-      ? curDeck.curLang
-      : langOpt.value.toLowerCase();
-    langOpt.value = capitalizeFirstLetter(curDeck.curLang);
-
-    displayListOfCards();
-    makeCardsMovableByBtns();
   });
 })();
-
-function capitalizeFirstLetter(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
