@@ -93,12 +93,14 @@ const openDeckWindow = function (e, deck) {
   if (document.querySelector('.btn--next-card'))
     appMainArea.removeChild(btnNextCard);
 
-  startMessage.style.display = endMessage.style.display = 'none';
-  deckOptions.style.display = 'grid';
-
   if (document.querySelector('.card--container')) {
     appMainArea.removeChild(document.querySelector('.card--container'));
   }
+
+  document.querySelector('.deck--create').style.display = 'none';
+
+  startMessage.style.display = endMessage.style.display = 'none';
+  deckOptions.style.display = 'grid';
 
   fillDeckOptions(deck.languages, deckLangsOptions, 'option');
   fillDeckOptions(deck.modes, deckModesList, 'input');
@@ -462,10 +464,13 @@ document
 
   let newDeck;
 
-  createNewDeckIcon.addEventListener(
-    'click',
-    () => (deckCreateWindow.style.display = 'flex')
-  );
+  createNewDeckIcon.addEventListener('click', () => {
+    deckOptions.style.display = 'none';
+    if (document.querySelector('.cards-list-container'))
+      document.querySelector('.cards-list-container').remove();
+
+    deckCreateWindow.style.display = 'flex';
+  });
 
   createNewDeckBtn.addEventListener('click', e => {
     e.preventDefault();
