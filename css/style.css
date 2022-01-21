@@ -206,3 +206,9 @@ input[value='Start'] {
     align-items: start; }
     .card--create--cards-block .card--bside-separate input {
       width: 10rem; }
+
+.deck--del--cur-lang {
+  grid-column-end: 3; }
+
+.deck--del--whole {
+  grid-column-end: 4; }

@@ -8,6 +8,8 @@ const decksList = document.querySelector('.list-of-decks');
 const deckOptions = document.querySelector('.deck--options');
 const deckLangsOptions = document.querySelector('.deck--languages-options');
 const deckModesList = document.querySelector('.deck--modes-list');
+const deckDeleteCurLangBtn = document.querySelector('.deck--del--cur-lang');
+const deckDeleteWholeBtn = document.querySelector('.deck--del--whole');
 const btnStart = document.querySelector('input[value="Start"]');
 const card = document.querySelector('.card');
 const createNewDeckIcon = document.querySelector('.deck--item-create');
@@ -346,7 +348,7 @@ const initDeck = function () {
     decksList.removeChild(decksList.lastElementChild);
   }
 
-  decks.forEach(deck => {
+  decks.forEach((deck, i) => {
     const deckItemEl = document.createElement('li');
     deckItemEl.classList.add('deck--item');
     decksList.appendChild(deckItemEl);
@@ -525,3 +527,18 @@ document
     cardCreateWindow.style.display = 'none';
   });
 })();
+
+deckDeleteWholeBtn.addEventListener('click', e => {
+  e.preventDefault();
+
+  const deckForDeletionIndex = decks.findIndex(
+    deck => deck.name === curDeck.name
+  );
+
+  decksList.children[deckForDeletionIndex + 1].remove();
+
+  decks.splice(deckForDeletionIndex, 1);
+
+  deckOptions.style.display = 'none';
+  document.querySelector('.cards-list-container').remove();
+});

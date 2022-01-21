@@ -322,3 +322,11 @@ input[value='Start'] {
     }
   }
 }
+
+.deck--del--cur-lang {
+  grid-column-end: 3;
+}
+
+.deck--del--whole {
+  grid-column-end: 4;
+}
