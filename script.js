@@ -277,71 +277,79 @@ const displayListOfCards = function () {
   cardsDnD(listOfCardsContainer);
 };
 
-decks.forEach(deck => {
-  const deckItemEl = document.createElement('li');
-  deckItemEl.classList.add('deck--item');
-  decksList.appendChild(deckItemEl);
+const initDeck = function () {
+  while (!decksList.lastElementChild.classList.contains('deck--item-create')) {
+    decksList.removeChild(decksList.lastElementChild);
+  }
 
-  deckItemEl.textContent = deck.name.slice(0, 1);
+  decks.forEach(deck => {
+    const deckItemEl = document.createElement('li');
+    deckItemEl.classList.add('deck--item');
+    decksList.appendChild(deckItemEl);
 
-  // CREATE DECK'S OPTIONS
-  const fillDeckOptions = function (prop, list, elem) {
-    list.innerHTML = '';
+    deckItemEl.textContent = deck.name.slice(0, 1);
 
-    prop.forEach(propValue => {
-      const item = document.createElement(elem);
+    // CREATE DECK'S OPTIONS
+    const fillDeckOptions = function (prop, list, elem) {
+      list.innerHTML = '';
 
-      if (elem === 'input') {
-        const id = propValue.replace(' ', '_');
+      prop.forEach(propValue => {
+        const item = document.createElement(elem);
 
-        list.insertAdjacentHTML(
-          'beforeend',
-          `<li>
+        if (elem === 'input') {
+          const id = propValue.replace(' ', '_');
+
+          list.insertAdjacentHTML(
+            'beforeend',
+            `<li>
             <input type="radio" name="mode" id="${id}" ${
-            propValue === 'Flashcards' ? 'checked' : ''
-          }>
+              propValue === 'Flashcards' ? 'checked' : ''
+            }>
             <label for="${id}">${propValue}</label>
            </li>`
-        );
-      } else {
-        item.textContent = propValue;
-        list.appendChild(item);
-        // if (list.value === '') list.value = item;
-        // if value === '', assign it as a value
+          );
+        } else {
+          item.textContent = propValue;
+          list.appendChild(item);
+          // if (list.value === '') list.value = item;
+          // if value === '', assign it as a value
+        }
+      });
+    };
+
+    // A DECK LIST ITEM
+    deckItemEl.addEventListener('click', () => {
+      curDeck = deck;
+
+      if (curDeck.curLang)
+        curDeck.cards[curDeck.curLang].forEach(card => (card.shown = false));
+
+      if (document.querySelector('.btn--next-card'))
+        appMainArea.removeChild(btnNextCard);
+
+      startMessage.style.display = endMessage.style.display = 'none';
+      deckOptions.style.display = 'grid';
+
+      if (document.querySelector('.card--container')) {
+        appMainArea.removeChild(document.querySelector('.card--container'));
       }
+
+      fillDeckOptions(deck.languages, deckLangsOptions, 'option');
+      fillDeckOptions(deck.modes, deckModesList, 'input');
+
+      const langOpt = document.querySelector('.deck--languages-options');
+      curDeck.curLang = curDeck.curLang
+        ? curDeck.curLang
+        : langOpt.value.toLowerCase();
+      langOpt.value = capitalizeFirstLetter(curDeck.curLang);
+
+      displayListOfCards();
+      makeCardsMovableByBtns();
     });
-  };
-
-  // A DECK LIST ITEM
-  deckItemEl.addEventListener('click', () => {
-    curDeck = deck;
-
-    if (curDeck.curLang)
-      curDeck.cards[curDeck.curLang].forEach(card => (card.shown = false));
-
-    if (document.querySelector('.btn--next-card'))
-      appMainArea.removeChild(btnNextCard);
-
-    startMessage.style.display = endMessage.style.display = 'none';
-    deckOptions.style.display = 'grid';
-
-    if (document.querySelector('.card--container')) {
-      appMainArea.removeChild(document.querySelector('.card--container'));
-    }
-
-    fillDeckOptions(deck.languages, deckLangsOptions, 'option');
-    fillDeckOptions(deck.modes, deckModesList, 'input');
-
-    const langOpt = document.querySelector('.deck--languages-options');
-    curDeck.curLang = curDeck.curLang
-      ? curDeck.curLang
-      : langOpt.value.toLowerCase();
-    langOpt.value = capitalizeFirstLetter(curDeck.curLang);
-
-    displayListOfCards();
-    makeCardsMovableByBtns();
   });
-});
+};
+
+initDeck();
 
 // Function creating a card HTML element
 const displayCard = function (deck) {
@@ -469,6 +477,8 @@ createNewDeckIcon.addEventListener('click', () => {
 
     deckCreateWindow.style.display = 'none';
     cardCreateWindow.style.display = 'flex';
+
+    initDeck();
 
     addCardBtn.addEventListener('click', e => {
       e.preventDefault();
