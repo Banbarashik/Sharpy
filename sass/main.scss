@@ -247,6 +247,10 @@ input[value='Start'] {
   margin-top: 2rem;
 }
 
+.card--btn-check {
+  @extend %btn;
+}
+
 @mixin border-hiding-pseudo-elements($x, $x_value, $y, $y_value, $transform) {
   content: '';
   position: absolute;
@@ -299,34 +303,30 @@ input[value='Start'] {
 .card--create--cards-block {
   display: flex;
   gap: 2rem;
+}
 
-  .card--fside-separate,
-  .card--bside-separate {
-    width: 50%;
-    height: 20rem;
+.card--side-separate {
+  height: 20rem;
+}
 
-    input {
-      background-color: transparent;
-      border: none;
-      outline: none;
-      font-size: inherit;
-    }
-  }
+.card--bside-separate {
+  align-items: center;
+}
 
-  .card-q {
-    text-align: center;
-    resize: none;
-    width: 28rem;
-    outline: none;
-  }
+.card--bside-separate input {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  font-size: inherit;
 
-  .card--bside-separate {
-    align-items: start;
+  width: 10rem;
+}
 
-    input {
-      width: 10rem;
-    }
-  }
+.card-q {
+  text-align: center;
+  resize: none;
+  width: 28rem;
+  outline: none;
 }
 
 .deck--del--cur-lang {

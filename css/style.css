@@ -142,7 +142,7 @@ input[value='Start'] {
   gap: 1rem;
   width: 10rem; }
 
-.card--btn-up, .card--btn-down, .card--btn-del {
+.card--btn-up, .card--btn-down, .card--btn-del, .card--btn-check {
   height: 4rem;
   border: none;
   border-radius: 0.5rem;
@@ -190,25 +190,25 @@ input[value='Start'] {
 .card--create--cards-block {
   display: flex;
   gap: 2rem; }
-  .card--create--cards-block .card--fside-separate,
-  .card--create--cards-block .card--bside-separate {
-    width: 50%;
-    height: 20rem; }
-    .card--create--cards-block .card--fside-separate input,
-    .card--create--cards-block .card--bside-separate input {
-      background-color: transparent;
-      border: none;
-      outline: none;
-      font-size: inherit; }
-  .card--create--cards-block .card-q {
-    text-align: center;
-    resize: none;
-    width: 28rem;
-    outline: none; }
-  .card--create--cards-block .card--bside-separate {
-    align-items: start; }
-    .card--create--cards-block .card--bside-separate input {
-      width: 10rem; }
+
+.card--side-separate {
+  height: 20rem; }
+
+.card--bside-separate {
+  align-items: center; }
+
+.card--bside-separate input {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  font-size: inherit;
+  width: 10rem; }
+
+.card-q {
+  text-align: center;
+  resize: none;
+  width: 28rem;
+  outline: none; }
 
 .deck--del--cur-lang {
   grid-column-end: 3; }

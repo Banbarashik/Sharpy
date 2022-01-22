@@ -20,6 +20,10 @@ const btnNextCard = document.createElement('button');
 btnNextCard.classList.add('btn--next-card');
 btnNextCard.textContent = 'Next card';
 
+const btnAddNewCard = document.createElement('button');
+btnAddNewCard.classList.add('cards--add-new');
+btnAddNewCard.textContent = 'Add a new card';
+
 // State variables
 let curDeck;
 // let curLang;
@@ -366,6 +370,13 @@ const displayListOfCards = function () {
   );
 
   cardsDnD(listOfCardsContainer);
+
+  listOfCardsContainer.appendChild(btnAddNewCard);
+
+  // listOfCardsContainer.insertAdjacentHTML(
+  //   'beforeend',
+  //   '<button class="cards--add-new">Add a new cards</button>'
+  // );
 };
 
 const initDeck = function () {
@@ -484,9 +495,9 @@ document
 
   // CARD
   const cardCreateWindow = document.querySelector('.card--create');
-  const q = document.querySelector('.card-q');
-  const a = document.querySelector('.card-a');
-  const img = document.querySelector('.card-img');
+  const q = document.querySelector('.card--create-q');
+  const a = document.querySelector('.card--create-a');
+  const img = document.querySelector('.card--create-img');
   const addCardBtn = document.querySelector('.deck--add-card-btn');
 
   const viewCreatedDeck = document.querySelector('.card--view-created-deck');
@@ -575,8 +586,6 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
     lang => lang === capitalizeFirstLetter(curDeck.curLang)
   );
 
-  // const cardsForDeletionIndex = curDeck.cards
-
   curDeck.languages.splice(langForDeletionIndex, 1);
   delete curDeck.cards[curDeck.curLang];
 
@@ -599,3 +608,46 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
     document.querySelector('.cards-list-container').remove();
   }
 });
+
+(function () {
+  btnAddNewCard.addEventListener('click', e => {
+    e.target.insertAdjacentHTML(
+      'beforebegin',
+      `<ul class="card--sides-block">
+      <li class="card--fside-separate card--side-separate">
+        <div class="card-q card--add-q" contenteditable="true" placeholder="Enter front-side text">
+        </div>
+      </li>
+      <li class="card--bside-separate card--side-separate">
+        <input type="text" class="card-a card--add-a" />
+        <input type="url" class="card--add-img" placeholder="https://imgur.com" />
+      </li>
+      <div class="card--btns">
+        <button class="card--btn-check">
+          <svg xmlns="http://www.w3.org/2000/svg"
+          class="ionicon" viewBox="0 0 512 512">
+          <title>Checkmark</title><path fill="none"
+          stroke="currentColor" stroke-linecap="round"
+          stroke-linejoin="round" stroke-width="48"
+          d="M416 128L192 384l-96-96"/></svg>
+        </button>
+      </div>
+     </ul>`
+    );
+  });
+
+  document.addEventListener('click', e => {
+    const target = e.target.closest('.card--btn-check');
+
+    if (target) {
+      const curCardBlock = e.target.closest('.card--sides-block');
+      const q = curCardBlock.querySelector('.card--add-q');
+      const a = curCardBlock.querySelector('.card--add-a');
+      const img = curCardBlock.querySelector('.card--add-img');
+
+      curDeck.cards[curDeck.curLang].push(
+        new Card(q.textContent, a.value, img.value)
+      );
+    }
+  });
+})();
