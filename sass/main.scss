@@ -241,6 +241,12 @@ input[value='Start'] {
   @extend %btn;
 }
 
+.card--btn-del {
+  @extend %btn;
+
+  margin-top: 2rem;
+}
+
 @mixin border-hiding-pseudo-elements($x, $x_value, $y, $y_value, $transform) {
   content: '';
   position: absolute;

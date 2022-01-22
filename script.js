@@ -156,7 +156,7 @@ const disableFirstAndLastBtns = function () {
   document.querySelectorAll('.card--btns').forEach((btnsBlock, _, arr) => {
     const cardI = +btnsBlock.dataset.cardI;
     let btnUp = btnsBlock.firstElementChild;
-    let btnDown = btnsBlock.lastElementChild;
+    let btnDown = btnUp.nextElementSibling;
 
     btnUp.disabled =
       cardI === 0 ? true : cardI === arr.length - 1 ? false : false;
@@ -168,13 +168,16 @@ const disableFirstAndLastBtns = function () {
 const makeCardsMovableByBtns = function () {
   const cardBtnsUp = document.querySelectorAll('.card--btn-up');
   const cardBtnsDown = document.querySelectorAll('.card--btn-down');
+  const cardBtnsDel = document.querySelectorAll('.card--btn-del');
 
   const moveArrElem = function (arr, fromIndex, toIndex) {
     const [elem] = arr.splice(fromIndex, 1);
     arr.splice(toIndex, 0, elem);
   };
 
-  const setEventListenersToUpDownBtns = function (btns) {
+  const delArrElem = (arr, i) => arr.splice(i, 1);
+
+  const setEventListenersToCardBtns = function (btns) {
     btns.forEach(btn => {
       btn.addEventListener('click', e => {
         const btnsBlock = e.currentTarget.parentNode;
@@ -182,19 +185,24 @@ const makeCardsMovableByBtns = function () {
 
         let cardI = +btnsBlock.dataset.cardI;
         const isBtnUp = btn.classList.contains('card--btn-up');
+        const isBtnDown = btn.classList.contains('card--btn-down');
 
-        moveArrElem(
-          curDeck.cards[curDeck.curLang],
-          cardI,
-          `${isBtnUp ? --cardI : ++cardI}`
-        );
+        if (isBtnUp || isBtnDown)
+          moveArrElem(
+            curDeck.cards[curDeck.curLang],
+            cardI,
+            `${isBtnUp ? --cardI : ++cardI}`
+          );
+        else delArrElem(curDeck.cards[curDeck.curLang], cardI);
 
         if (isBtnUp)
           cardBlock.previousSibling.insertAdjacentElement(
             'beforebegin',
             cardBlock
           );
-        else cardBlock.nextSibling.insertAdjacentElement('afterend', cardBlock);
+        else if (isBtnDown)
+          cardBlock.nextSibling.insertAdjacentElement('afterend', cardBlock);
+        else cardBlock.remove();
 
         updateIndices();
         disableFirstAndLastBtns();
@@ -202,8 +210,9 @@ const makeCardsMovableByBtns = function () {
     });
   };
 
-  setEventListenersToUpDownBtns(cardBtnsUp);
-  setEventListenersToUpDownBtns(cardBtnsDown);
+  setEventListenersToCardBtns(cardBtnsUp);
+  setEventListenersToCardBtns(cardBtnsDown);
+  setEventListenersToCardBtns(cardBtnsDel);
 
   updateIndices();
   disableFirstAndLastBtns();
@@ -337,6 +346,15 @@ const displayListOfCards = function () {
             <path fill="none" stroke="currentColor"
             stroke-linecap="round" stroke-linejoin="round"
             stroke-width="48" d="M112 184l144 144 144-144"/>
+            </svg>
+          </button>
+          <button class="card--btn-del">
+            <svg xmlns="http://www.w3.org/2000/svg"
+            class="ionicon" viewBox="0 0 512 512">
+            <title>Close</title><path fill="none"
+            stroke="currentColor" stroke-linecap="round"
+            stroke-linejoin="round" stroke-width="48"
+            d="M368 368L144 144M368 144L144 368"/>
             </svg>
           </button>
         </div>

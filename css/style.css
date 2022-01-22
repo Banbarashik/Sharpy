@@ -142,7 +142,7 @@ input[value='Start'] {
   gap: 1rem;
   width: 10rem; }
 
-.card--btn-up, .card--btn-down {
+.card--btn-up, .card--btn-down, .card--btn-del {
   height: 4rem;
   border: none;
   border-radius: 0.5rem;
@@ -150,6 +150,9 @@ input[value='Start'] {
 
 .card--btn-up {
   position: relative; }
+
+.card--btn-del {
+  margin-top: 2rem; }
 
 .card--btn-up::after {
   content: '';
