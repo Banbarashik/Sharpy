@@ -372,11 +372,7 @@ const displayListOfCards = function () {
   cardsDnD(listOfCardsContainer);
 
   listOfCardsContainer.appendChild(btnAddNewCard);
-
-  // listOfCardsContainer.insertAdjacentHTML(
-  //   'beforeend',
-  //   '<button class="cards--add-new">Add a new cards</button>'
-  // );
+  // appContainer.appendChild(btnAddNewCard);
 };
 
 const initDeck = function () {
@@ -613,15 +609,15 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
   btnAddNewCard.addEventListener('click', e => {
     e.target.insertAdjacentHTML(
       'beforebegin',
-      `<ul class="card--sides-block">
-      <li class="card--fside-separate card--side-separate">
+      `<li class="card--sides-block" draggable="true">
+      <div class="card--fside-separate card--side-separate">
         <div class="card-q card--add-q" contenteditable="true" placeholder="Enter front-side text">
         </div>
-      </li>
-      <li class="card--bside-separate card--side-separate">
+      </div>
+      <div class="card--bside-separate card--side-separate">
         <input type="text" class="card-a card--add-a" />
         <input type="url" class="card--add-img" placeholder="https://imgur.com" />
-      </li>
+      </div>
       <div class="card--btns">
         <button class="card--btn-check">
           <svg xmlns="http://www.w3.org/2000/svg"
@@ -632,7 +628,7 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
           d="M416 128L192 384l-96-96"/></svg>
         </button>
       </div>
-     </ul>`
+     </li>`
     );
   });
 
@@ -648,6 +644,49 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
       curDeck.cards[curDeck.curLang].push(
         new Card(q.textContent, a.value, img.value)
       );
+
+      curCardBlock.innerHTML = '';
+      curCardBlock.insertAdjacentHTML(
+        'afterbegin',
+        `<div class="card--fside-separate">
+          <p class="card--fside-q">${q.textContent}</p>
+        </div>
+        <div class="card--bside-separate">
+          <p class="card--bside-a">${a.value}</p>
+        </div>
+        <div class="card--btns">
+          <button class="card--btn-up">
+            <svg xmlns="http://www.w3.org/2000/svg"
+            class="ionicon" viewBox="0 0 512 512">
+            <title>Chevron Up</title>
+            <path fill="none" stroke="currentColor"
+            stroke-linecap="round" stroke-linejoin="round"
+            stroke-width="48" d="M112 328l144-144 144 144"/>
+            </svg>
+          </button>
+          <button class="card--btn-down">
+            <svg xmlns="http://www.w3.org/2000/svg"
+            class="ionicon" viewBox="0 0 512 512">
+            <title>Chevron Down</title>
+            <path fill="none" stroke="currentColor"
+            stroke-linecap="round" stroke-linejoin="round"
+            stroke-width="48" d="M112 184l144 144 144-144"/>
+            </svg>
+          </button>
+          <button class="card--btn-del">
+            <svg xmlns="http://www.w3.org/2000/svg"
+            class="ionicon" viewBox="0 0 512 512">
+            <title>Close</title><path fill="none"
+            stroke="currentColor" stroke-linecap="round"
+            stroke-linejoin="round" stroke-width="48"
+            d="M368 368L144 144M368 144L144 368"/>
+            </svg>
+          </button>
+        </div>`
+      );
+
+      makeCardsMovableByBtns();
+      cardsDnD(document.querySelector('.cards-list-container'));
     }
   });
 })();
