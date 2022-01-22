@@ -155,13 +155,16 @@ const updateIndices = () =>
 const disableFirstAndLastBtns = function () {
   document.querySelectorAll('.card--btns').forEach((btnsBlock, _, arr) => {
     const cardI = +btnsBlock.dataset.cardI;
-    let btnUp = btnsBlock.firstElementChild;
-    let btnDown = btnUp.nextElementSibling;
+    const btnUp = btnsBlock.firstElementChild;
+    const btnDown = btnUp.nextElementSibling;
 
     btnUp.disabled =
       cardI === 0 ? true : cardI === arr.length - 1 ? false : false;
     btnDown.disabled =
       cardI === 0 ? false : cardI === arr.length - 1 ? true : false;
+
+    if (document.querySelector('.cards-list-container').children.length === 1)
+      btnUp.disabled = btnDown.disabled = true;
   });
 };
 
