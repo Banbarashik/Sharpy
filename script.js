@@ -90,7 +90,7 @@ const openDeckWindow = function (e, deck) {
 
   curDeck = deck;
 
-  if (deck.curLang)
+  if (deck.curLang && deck.languages.length > 1)
     deck.cards[deck.curLang].forEach(card => (card.shown = false));
 
   if (document.querySelector('.btn--next-card'))
@@ -113,8 +113,12 @@ const openDeckWindow = function (e, deck) {
   deck.curLang = deck.curLang ? deck.curLang : langOpt.value.toLowerCase();
   langOpt.value = capitalizeFirstLetter(deck.curLang);
 
-  displayListOfCards();
-  makeCardsMovableByBtns();
+  if (deck.languages.length > 0) {
+    displayListOfCards();
+    makeCardsMovableByBtns();
+  } else {
+    document.querySelector('.cards-list-container').remove();
+  }
 };
 
 // CREATE DECK'S OPTIONS
@@ -569,6 +573,7 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
 
   if (curDeck.languages.length > 0) {
     displayListOfCards();
+    makeCardsMovableByBtns();
   } else {
     document.querySelector('.cards-list-container').remove();
   }
