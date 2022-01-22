@@ -542,3 +542,34 @@ deckDeleteWholeBtn.addEventListener('click', e => {
   deckOptions.style.display = 'none';
   document.querySelector('.cards-list-container').remove();
 });
+
+deckDeleteCurLangBtn.addEventListener('click', e => {
+  e.preventDefault();
+
+  const langForDeletionIndex = curDeck.languages.findIndex(
+    lang => lang === capitalizeFirstLetter(curDeck.curLang)
+  );
+
+  // const cardsForDeletionIndex = curDeck.cards
+
+  curDeck.languages.splice(langForDeletionIndex, 1);
+  delete curDeck.cards[curDeck.curLang];
+
+  [...deckLangsOptions.children].forEach(lang => {
+    if (lang.value === capitalizeFirstLetter(curDeck.curLang)) lang.remove();
+  });
+
+  if (curDeck.languages.length > 0) {
+    curDeck.curLang = curDeck.languages[0].toLowerCase();
+  }
+
+  deckLangsOptions.value = capitalizeFirstLetter(curDeck.curLang);
+
+  console.log(curDeck, curDeck.curLang, curDeck.languages);
+
+  if (curDeck.languages.length > 0) {
+    displayListOfCards();
+  } else {
+    document.querySelector('.cards-list-container').remove();
+  }
+});
