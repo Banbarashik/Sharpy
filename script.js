@@ -161,11 +161,15 @@ const disableFirstAndLastBtns = function () {
     const cardI = +btnsBlock.dataset.cardI;
     const btnUp = btnsBlock.firstElementChild;
     const btnDown = btnUp.nextElementSibling;
+    const cardIsNotCreated =
+      btnsBlock.parentElement.classList.contains('card--not-created');
 
-    btnUp.disabled =
-      cardI === 0 ? true : cardI === arr.length - 1 ? false : false;
-    btnDown.disabled =
-      cardI === 0 ? false : cardI === arr.length - 1 ? true : false;
+    if (!cardIsNotCreated) {
+      btnUp.disabled =
+        cardI === 0 ? true : cardI === arr.length - 1 ? false : false;
+      btnDown.disabled =
+        cardI === 0 ? false : cardI === arr.length - 1 ? true : false;
+    }
 
     if (document.querySelector('.cards-list-container').children.length === 1)
       btnUp.disabled = btnDown.disabled = true;
@@ -173,9 +177,7 @@ const disableFirstAndLastBtns = function () {
 };
 
 const makeCardsMovableByBtns = function () {
-  const cardBtnsUp = document.querySelectorAll('.card--btn-up');
-  const cardBtnsDown = document.querySelectorAll('.card--btn-down');
-  const cardBtnsDel = document.querySelectorAll('.card--btn-del');
+  const currentList = document.querySelector('.cards-list-container');
 
   const moveArrElem = function (arr, fromIndex, toIndex) {
     const [elem] = arr.splice(fromIndex, 1);
@@ -184,45 +186,59 @@ const makeCardsMovableByBtns = function () {
 
   const delArrElem = (arr, i) => arr.splice(i, 1);
 
-  const setEventListenersToCardBtns = function (btns) {
-    btns.forEach(btn => {
-      btn.addEventListener('click', e => {
-        const btnsBlock = e.currentTarget.parentNode;
-        const cardBlock = btnsBlock.parentNode;
+  currentList.addEventListener('click', e => {
+    const getButton = function (target) {
+      while (
+        target.nodeName.toLowerCase() != 'button' &&
+        target.nodeName.toLowerCase() != 'body'
+      ) {
+        target = target.parentNode;
+      }
+      if (target.nodeName.toLowerCase() == 'body') {
+        return false;
+      } else {
+        return target;
+      }
+    };
 
-        let cardI = +btnsBlock.dataset.cardI;
-        const isBtnUp = btn.classList.contains('card--btn-up');
-        const isBtnDown = btn.classList.contains('card--btn-down');
+    if (
+      e.target.closest('.card--btn-up') ||
+      e.target.closest('.card--btn-down') ||
+      e.target.closest('.card--btn-del')
+    ) {
+      const btnsBlock = getButton(e.target).parentNode;
+      const cardBlock = btnsBlock.parentNode;
 
-        if (isBtnUp || isBtnDown)
-          moveArrElem(
-            curDeck.cards[curDeck.curLang],
-            cardI,
-            `${isBtnUp ? --cardI : ++cardI}`
-          );
-        else delArrElem(curDeck.cards[curDeck.curLang], cardI);
+      let cardI = +btnsBlock.dataset.cardI;
+      const isBtnUp = getButton(e.target).classList.contains('card--btn-up');
+      const isBtnDown = getButton(e.target).classList.contains(
+        'card--btn-down'
+      );
 
-        if (isBtnUp)
-          cardBlock.previousSibling.insertAdjacentElement(
-            'beforebegin',
-            cardBlock
-          );
-        else if (isBtnDown)
-          cardBlock.nextSibling.insertAdjacentElement('afterend', cardBlock);
-        else cardBlock.remove();
+      if (isBtnUp || isBtnDown)
+        moveArrElem(
+          curDeck.cards[curDeck.curLang],
+          cardI,
+          `${isBtnUp ? --cardI : ++cardI}`
+        );
+      else delArrElem(curDeck.cards[curDeck.curLang], cardI);
 
-        updateIndices();
-        disableFirstAndLastBtns();
-      });
-    });
-  };
+      if (isBtnUp)
+        cardBlock.previousSibling.insertAdjacentElement(
+          'beforebegin',
+          cardBlock
+        );
+      else if (isBtnDown)
+        cardBlock.nextSibling.insertAdjacentElement('afterend', cardBlock);
+      else cardBlock.remove();
 
-  setEventListenersToCardBtns(cardBtnsUp);
-  setEventListenersToCardBtns(cardBtnsDown);
-  setEventListenersToCardBtns(cardBtnsDel);
+      updateIndices();
+      disableFirstAndLastBtns();
+    }
+  });
 
-  updateIndices();
-  disableFirstAndLastBtns();
+  // updateIndices();
+  // disableFirstAndLastBtns();
 };
 
 const cardsDnD = function () {
@@ -278,7 +294,7 @@ const cardsDnD = function () {
       const bounding = e.target.getBoundingClientRect();
       const offset = bounding.y + bounding.height / 2;
 
-      if (li !== draggableEl) {
+      if (li !== draggableEl && !li.classList.contains('card--not-created')) {
         li.style.borderTopLeftRadius = '1.3rem';
         li.style.borderBottomLeftRadius = '1.3rem';
         if (e.clientY - offset < 0 && li !== draggableEl.nextSibling) {
@@ -637,10 +653,10 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
 });
 
 (function () {
-  btnAddNewCard.addEventListener('click', e => {
+  btnAddNewCard.addEventListener('click', () => {
     document.querySelector('.cards-list-container').insertAdjacentHTML(
       'beforeend',
-      `<li class="card--sides-block">
+      `<li class="card--sides-block card--not-created">
       <div class="card--fside-separate card--side-separate">
         <div class="card-q card--add-q" contenteditable="true" placeholder="Enter front-side text">
         </div>
@@ -668,6 +684,7 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
 
     if (target) {
       const curCardBlock = e.target.closest('.card--sides-block');
+
       const q = curCardBlock.querySelector('.card--add-q');
       const a = curCardBlock.querySelector('.card--add-a');
       const img = curCardBlock.querySelector('.card--add-img');
@@ -676,6 +693,7 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
         new Card(q.textContent, a.value, img.value)
       );
 
+      curCardBlock.classList.remove('card--not-created');
       curCardBlock.setAttribute('draggable', 'true');
 
       curCardBlock.innerHTML = '';
@@ -718,7 +736,7 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
         </div>`
       );
 
-      makeCardsMovableByBtns();
+      updateIndices();
     }
   });
 })();
