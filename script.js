@@ -225,13 +225,14 @@ const makeCardsMovableByBtns = function () {
   disableFirstAndLastBtns();
 };
 
-const cardsDnD = function (ul) {
+const cardsDnD = function () {
   let draggableEl;
   let indexBefore;
   let indexAfter;
   let cardsListArr;
+  const currentList = document.querySelector('.cards-list-container');
 
-  const getCurrentList = () => (cardsListArr = [...ul.children]);
+  const getCurrentList = () => (cardsListArr = [...currentList.children]);
   getCurrentList();
 
   const reorderArray = function (indexBefore, indexAfter) {
@@ -239,22 +240,42 @@ const cardsDnD = function (ul) {
     curDeck.cards[curDeck.curLang].splice(indexAfter, 0, movedCard);
   };
 
-  cardsListArr.forEach(li => {
-    li.addEventListener('dragstart', e => {
-      draggableEl = e.currentTarget;
+  const getLI = function (target) {
+    while (
+      target.nodeName.toLowerCase() != 'li' &&
+      target.nodeName.toLowerCase() != 'body'
+    ) {
+      target = target.parentNode;
+    }
+    if (target.nodeName.toLowerCase() == 'body') {
+      return false;
+    } else {
+      return target;
+    }
+  };
+
+  currentList.addEventListener('dragstart', e => {
+    const target = e.target.closest('.card--sides-block');
+
+    if (target) {
+      draggableEl = getLI(e.target);
 
       e.dataTransfer.setData('text/plain', null);
 
       getCurrentList();
       indexBefore = cardsListArr.indexOf(draggableEl);
-    });
+    }
+  });
 
-    li.addEventListener('dragover', e => {
-      e.preventDefault();
+  currentList.addEventListener('dragover', e => {
+    e.preventDefault();
 
-      const li = e.currentTarget;
+    const target = e.target.closest('.card--sides-block');
 
-      const bounding = e.currentTarget.getBoundingClientRect();
+    if (target) {
+      const li = getLI(e.target);
+
+      const bounding = e.target.getBoundingClientRect();
       const offset = bounding.y + bounding.height / 2;
 
       if (li !== draggableEl) {
@@ -271,19 +292,26 @@ const cardsDnD = function (ul) {
           li.style.borderTop = '';
         }
       }
-    });
+    }
+  });
 
-    li.addEventListener('dragleave', e => {
-      const li = e.currentTarget;
+  currentList.addEventListener('dragleave', e => {
+    const target = e.target.closest('.card--sides-block');
+
+    if (target) {
+      const li = getLI(e.target);
 
       li.style.borderTop = '';
       li.style.borderBottom = '';
-    });
+    }
+  });
 
-    li.addEventListener('drop', e => {
-      e.preventDefault();
+  currentList.addEventListener('drop', e => {
+    e.preventDefault();
+    const target = e.target.closest('.card--sides-block');
 
-      const li = e.currentTarget;
+    if (target) {
+      const li = getLI(e.target);
 
       getCurrentList();
       indexAfter = cardsListArr.indexOf(li);
@@ -313,18 +341,22 @@ const cardsDnD = function (ul) {
 
       updateIndices();
       disableFirstAndLastBtns();
-    });
+    }
   });
 };
 
 const displayListOfCards = function () {
-  const existingList = document.querySelector('.cards-list-container');
-  if (existingList) existingList.remove();
+  const existingBlockWrapper = document.querySelector('.cards-block-wrapper');
+  if (existingBlockWrapper) existingBlockWrapper.remove();
+
+  const cardsBlockWrapper = document.createElement('div');
+  cardsBlockWrapper.classList.add('cards-block-wrapper');
 
   const listOfCardsContainer = document.createElement('ul');
   listOfCardsContainer.classList.add('cards-list-container');
 
-  appContainer.appendChild(listOfCardsContainer);
+  cardsBlockWrapper.appendChild(listOfCardsContainer);
+  appContainer.appendChild(cardsBlockWrapper);
 
   curDeck.cards[curDeck.curLang].forEach(card =>
     listOfCardsContainer.insertAdjacentHTML(
@@ -369,10 +401,9 @@ const displayListOfCards = function () {
     )
   );
 
-  cardsDnD(listOfCardsContainer);
+  cardsDnD();
 
-  listOfCardsContainer.appendChild(btnAddNewCard);
-  // appContainer.appendChild(btnAddNewCard);
+  cardsBlockWrapper.appendChild(btnAddNewCard);
 };
 
 const initDeck = function () {
@@ -607,9 +638,9 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
 
 (function () {
   btnAddNewCard.addEventListener('click', e => {
-    e.target.insertAdjacentHTML(
-      'beforebegin',
-      `<li class="card--sides-block" draggable="true">
+    document.querySelector('.cards-list-container').insertAdjacentHTML(
+      'beforeend',
+      `<li class="card--sides-block">
       <div class="card--fside-separate card--side-separate">
         <div class="card-q card--add-q" contenteditable="true" placeholder="Enter front-side text">
         </div>
@@ -644,6 +675,8 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
       curDeck.cards[curDeck.curLang].push(
         new Card(q.textContent, a.value, img.value)
       );
+
+      curCardBlock.setAttribute('draggable', 'true');
 
       curCardBlock.innerHTML = '';
       curCardBlock.insertAdjacentHTML(
@@ -686,7 +719,6 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
       );
 
       makeCardsMovableByBtns();
-      cardsDnD(document.querySelector('.cards-list-container'));
     }
   });
 })();

@@ -146,13 +146,17 @@ input[value='Start'] {
   backface-visibility: hidden;
 }
 
+.cards-block-wrapper {
+  grid-column: 1 / -1;
+}
+
 .cards-list-container {
   @include scrollbars();
 
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  grid-column: 1 / -1;
+
   justify-self: center;
 
   width: 100%;
