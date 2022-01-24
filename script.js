@@ -151,10 +151,14 @@ const fillDeckOptions = function (prop, list, elem) {
   });
 };
 
-const updateIndices = () =>
-  document
-    .querySelectorAll('.card--btns')
+const updateIndices = () => {
+  [...document.querySelectorAll('.card--btns')]
+    .filter(
+      btnBlock =>
+        !btnBlock.parentElement.classList.contains('card--not-created')
+    )
     .forEach((btn, i) => (btn.dataset.cardI = i));
+};
 
 const disableFirstAndLastBtns = function () {
   document.querySelectorAll('.card--btns').forEach((btnsBlock, _, arr) => {
@@ -215,13 +219,33 @@ const makeCardsMovableByBtns = function () {
         'card--btn-down'
       );
 
-      if (isBtnUp || isBtnDown)
+      let isPreviousCardNotCreated;
+      if (cardBlock.previousElementSibling) {
+        isPreviousCardNotCreated =
+          cardBlock.previousElementSibling.classList.contains(
+            'card--not-created'
+          );
+      }
+
+      let isNextCardNotCreated = false;
+      if (cardBlock.nextElementSibling) {
+        isNextCardNotCreated =
+          cardBlock.nextElementSibling.classList.contains('card--not-created');
+      }
+
+      if (
+        (isBtnUp || isBtnDown) &&
+        !(isPreviousCardNotCreated && isNextCardNotCreated) &&
+        !(isBtnDown && isNextCardNotCreated) &&
+        !(isBtnUp && isPreviousCardNotCreated)
+      ) {
         moveArrElem(
           curDeck.cards[curDeck.curLang],
           cardI,
           `${isBtnUp ? --cardI : ++cardI}`
         );
-      else delArrElem(curDeck.cards[curDeck.curLang], cardI);
+      } else if (!isBtnUp && !isBtnDown)
+        delArrElem(curDeck.cards[curDeck.curLang], cardI);
 
       if (isBtnUp)
         cardBlock.previousSibling.insertAdjacentElement(
