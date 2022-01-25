@@ -161,18 +161,15 @@ const updateIndices = () => {
 };
 
 const disableFirstAndLastBtns = function () {
-  document.querySelectorAll('.card--btns').forEach((btnsBlock, _, arr) => {
-    const cardI = +btnsBlock.dataset.cardI;
+  document.querySelectorAll('.card--btns').forEach((btnsBlock, i, arr) => {
     const btnUp = btnsBlock.firstElementChild;
     const btnDown = btnUp.nextElementSibling;
     const cardIsNotCreated =
       btnsBlock.parentElement.classList.contains('card--not-created');
 
     if (!cardIsNotCreated) {
-      btnUp.disabled =
-        cardI === 0 ? true : cardI === arr.length - 1 ? false : false;
-      btnDown.disabled =
-        cardI === 0 ? false : cardI === arr.length - 1 ? true : false;
+      btnUp.disabled = i === 0 ? true : i === arr.length - 1 ? false : false;
+      btnDown.disabled = i === 0 ? false : i === arr.length - 1 ? true : false;
     }
 
     if (document.querySelector('.cards-list-container').children.length === 1)
@@ -261,8 +258,8 @@ const makeCardsMovableByBtns = function () {
     }
   });
 
-  // updateIndices();
-  // disableFirstAndLastBtns();
+  updateIndices();
+  disableFirstAndLastBtns();
 };
 
 const cardsDnD = function () {
@@ -455,14 +452,13 @@ const initDeck = function () {
     decksList.removeChild(decksList.lastElementChild);
   }
 
-  decks.forEach((deck, i) => {
+  decks.forEach(deck => {
     const deckItemEl = document.createElement('li');
     deckItemEl.classList.add('deck--item');
     decksList.appendChild(deckItemEl);
 
     deckItemEl.textContent = deck.name.slice(0, 1);
 
-    // A DECK LIST ITEM
     deckItemEl.addEventListener('click', e => openDeckWindow(e, deck));
   });
 };
@@ -767,6 +763,8 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
         0,
         new Card(q.textContent, a.value, img.value)
       );
+
+      disableFirstAndLastBtns();
     }
   });
 })();
