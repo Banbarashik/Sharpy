@@ -272,7 +272,11 @@ const cardsDnD = function () {
   let cardsListArr;
   const currentList = document.querySelector('.cards-list-container');
 
-  const getCurrentList = () => (cardsListArr = [...currentList.children]);
+  const getCurrentList = function () {
+    cardsListArr = [...currentList.children].filter(
+      cardBlock => !cardBlock.classList.contains('card--not-created')
+    );
+  };
   getCurrentList();
 
   const reorderArray = function (indexBefore, indexAfter) {
