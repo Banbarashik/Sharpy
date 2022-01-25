@@ -704,18 +704,12 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
   });
 
   document.addEventListener('click', e => {
-    const target = e.target.closest('.card--btn-check');
-
-    if (target) {
+    if (e.target.closest('.card--btn-check')) {
       const curCardBlock = e.target.closest('.card--sides-block');
 
       const q = curCardBlock.querySelector('.card--add-q');
       const a = curCardBlock.querySelector('.card--add-a');
       const img = curCardBlock.querySelector('.card--add-img');
-
-      curDeck.cards[curDeck.curLang].push(
-        new Card(q.textContent, a.value, img.value)
-      );
 
       curCardBlock.classList.remove('card--not-created');
       curCardBlock.setAttribute('draggable', 'true');
@@ -760,7 +754,15 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
         </div>`
       );
 
+      const btnsBlock = curCardBlock.querySelector('.card--btns');
+
       updateIndices();
+
+      curDeck.cards[curDeck.curLang].splice(
+        +btnsBlock.dataset.cardI,
+        0,
+        new Card(q.textContent, a.value, img.value)
+      );
     }
   });
 })();
