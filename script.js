@@ -203,8 +203,10 @@ const makeCardsMovableByBtns = function () {
     };
 
     if (
-      e.target.closest('.card--btn-up') ||
-      e.target.closest('.card--btn-down') ||
+      (e.target.closest('.card--btn-up') &&
+        e.target.closest('.card--btn-up').disabled === false) ||
+      (e.target.closest('.card--btn-down') &&
+        e.target.closest('.card--btn-down').disabled === false) ||
       e.target.closest('.card--btn-del')
     ) {
       const btnsBlock = getButton(e.target).parentNode;
