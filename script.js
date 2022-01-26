@@ -470,13 +470,18 @@ const initDeck = function () {
 
     deckItemEl.textContent = deck.name.slice(0, 1);
 
+    let cardsTotalNumber = 0;
+    for (const lang of Object.values(deck.cards)) {
+      cardsTotalNumber += lang.length;
+    }
+
     deckItemEl.insertAdjacentHTML(
       'beforeend',
       `<div class="deck--info">
         <p>Name: ${deck.name}</p>
         <p>Author: ${deck.author}</p>
         <p>Languages: ${deck.languages.join(', ')}</p>
-        <p>Cards: ${deck.cards.russian.length}</p>
+        <p>Cards: ${cardsTotalNumber}</p>
        </div>
       `
     );

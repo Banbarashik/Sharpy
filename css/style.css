@@ -227,6 +227,7 @@ input[value='Start'] {
 
 .deck--info {
   position: absolute;
+  z-index: 1;
   display: none;
   padding: 1rem;
   border-radius: 1rem;
