@@ -2,6 +2,7 @@
 // DOM elements
 const appContainer = document.querySelector('.app--container');
 const appMainArea = document.querySelector('.app--main-area');
+const appSidebar = document.querySelector('.app--sidebar');
 const startMessage = document.querySelector('.app--start-message');
 const endMessage = document.querySelector('.app--end-message');
 const decksList = document.querySelector('.list-of-decks');
@@ -95,6 +96,20 @@ function capitalizeFirstLetter(str) {
 function toNormalCase(str) {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
+
+const getLI = function (target) {
+  while (
+    target.nodeName.toLowerCase() != 'li' &&
+    target.nodeName.toLowerCase() != 'body'
+  ) {
+    target = target.parentNode;
+  }
+  if (target.nodeName.toLowerCase() == 'body') {
+    return false;
+  } else {
+    return target;
+  }
+};
 
 const openDeckWindow = function (e, deck) {
   e.preventDefault();
@@ -290,20 +305,6 @@ const cardsDnD = function () {
     curDeck.cards[curDeck.curLang].splice(indexAfter, 0, movedCard);
   };
 
-  const getLI = function (target) {
-    while (
-      target.nodeName.toLowerCase() != 'li' &&
-      target.nodeName.toLowerCase() != 'body'
-    ) {
-      target = target.parentNode;
-    }
-    if (target.nodeName.toLowerCase() == 'body') {
-      return false;
-    } else {
-      return target;
-    }
-  };
-
   currentList.addEventListener('dragstart', e => {
     const target = e.target.closest('.card--sides-block');
 
@@ -468,6 +469,17 @@ const initDeck = function () {
     decksList.appendChild(deckItemEl);
 
     deckItemEl.textContent = deck.name.slice(0, 1);
+
+    deckItemEl.insertAdjacentHTML(
+      'beforeend',
+      `<div class="deck--info">
+        <p>Name: ${deck.name}</p>
+        <p>Author: ${deck.author}</p>
+        <p>Languages: ${deck.languages.join(', ')}</p>
+        <p>Cards: ${deck.cards.russian.length}</p>
+       </div>
+      `
+    );
 
     deckItemEl.addEventListener('click', e => openDeckWindow(e, deck));
   });
@@ -813,4 +825,18 @@ cardsSearch.addEventListener('keyup', () => {
       card.style.display = 'flex';
     } else card.style.display = 'none';
   });
+});
+
+appSidebar.addEventListener('mousemove', e => {
+  const target = e.target.closest('.deck--item:not(.deck--item-create)');
+
+  if (target) {
+    const deckInfoBlock = target.querySelector('.deck--info');
+    deckInfoBlock.style.display = 'block';
+
+    deckInfoBlock.style.top = e.pageY + 'px';
+    deckInfoBlock.style.left = e.pageX + 'px';
+
+    target.onmouseleave = () => (deckInfoBlock.style.display = 'none');
+  }
 });
