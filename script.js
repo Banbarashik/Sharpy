@@ -111,6 +111,18 @@ const getLI = function (target) {
   }
 };
 
+const updateCardsNum = function (operation) {
+  const decksIcons = [...decksList.children];
+  const curDeckIcon = decksIcons.find(
+    deck => deck.dataset.deckName === curDeck.name
+  );
+  const cardsNum = curDeckIcon.querySelector('.deck--cards-num');
+  cardsNum.textContent =
+    operation === 'increment'
+      ? Number(++cardsNum.textContent)
+      : Number(--cardsNum.textContent);
+};
+
 const openDeckWindow = function (e, deck) {
   e.preventDefault();
 
@@ -275,7 +287,10 @@ const makeCardsMovableByBtns = function () {
         );
       else if (isBtnDown)
         cardBlock.nextSibling.insertAdjacentElement('afterend', cardBlock);
-      else cardBlock.remove();
+      else {
+        cardBlock.remove();
+        updateCardsNum('decrement');
+      }
 
       updateIndices();
       disableFirstAndLastBtns();
@@ -470,6 +485,8 @@ const initDeck = function () {
 
     deckItemEl.textContent = deck.name.slice(0, 1);
 
+    deckItemEl.dataset.deckName = deck.name;
+
     let cardsTotalNumber = 0;
     for (const lang of Object.values(deck.cards)) {
       cardsTotalNumber += lang.length;
@@ -481,7 +498,7 @@ const initDeck = function () {
         <p>Name: ${deck.name}</p>
         <p>Author: ${deck.author}</p>
         <p>Languages: ${deck.languages.join(', ')}</p>
-        <p>Cards: ${cardsTotalNumber}</p>
+        <p>Cards: <span class="deck--cards-num">${cardsTotalNumber}</span></p>
        </div>
       `
     );
@@ -792,6 +809,8 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
       );
 
       disableFirstAndLastBtns();
+
+      updateCardsNum('increment');
     }
   });
 })();
