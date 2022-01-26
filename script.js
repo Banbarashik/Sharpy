@@ -14,6 +14,7 @@ const btnStart = document.querySelector('input[value="Start"]');
 const card = document.querySelector('.card');
 const createNewDeckIcon = document.querySelector('.deck--item-create');
 const createNewCardWindow = document.querySelector('.card--create');
+const addNewLangBtn = document.querySelector('.lang--add-btn');
 
 // Creating DOM elements
 const btnNextCard = document.createElement('button');
@@ -24,9 +25,12 @@ const btnAddNewCard = document.createElement('button');
 btnAddNewCard.classList.add('cards--add-new');
 btnAddNewCard.textContent = 'Add a new card';
 
+const cardsSearch = document.createElement('input');
+cardsSearch.setAttribute('type', 'text');
+cardsSearch.setAttribute('placeholder', 'search for a card...');
+
 // State variables
 let curDeck;
-// let curLang;
 let order = 'random';
 
 class Deck {
@@ -404,6 +408,9 @@ const displayListOfCards = function () {
   cardsBlockWrapper.appendChild(listOfCardsContainer);
   appContainer.appendChild(cardsBlockWrapper);
 
+  cardsBlockWrapper.prepend(cardsSearch);
+  cardsBlockWrapper.appendChild(btnAddNewCard);
+
   curDeck.cards[curDeck.curLang].forEach(card =>
     listOfCardsContainer.insertAdjacentHTML(
       'beforeend',
@@ -448,8 +455,6 @@ const displayListOfCards = function () {
   );
 
   cardsDnD();
-
-  cardsBlockWrapper.appendChild(btnAddNewCard);
 };
 
 const initDeck = function () {
@@ -774,7 +779,7 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
   });
 })();
 
-document.querySelector('.lang--add-btn').addEventListener('click', e => {
+addNewLangBtn.addEventListener('click', e => {
   e.preventDefault();
 
   const langsSelectList = document.querySelector('.deck--languages-options');
@@ -788,4 +793,24 @@ document.querySelector('.lang--add-btn').addEventListener('click', e => {
   langsSelectList.add(newLang);
 
   langInput.value = '';
+});
+
+cardsSearch.addEventListener('keyup', () => {
+  const cards = document.querySelectorAll('.card--sides-block');
+  const input = cardsSearch.value.toLowerCase();
+
+  cards.forEach(card => {
+    const fsideText = card
+      .querySelector('.card--fside-separate')
+      .textContent.trim()
+      .toLowerCase();
+    const bsideText = card
+      .querySelector('.card--bside-separate')
+      .textContent.trim()
+      .toLowerCase();
+
+    if (fsideText.includes(input) || bsideText.includes(input)) {
+      card.style.display = 'flex';
+    } else card.style.display = 'none';
+  });
 });
