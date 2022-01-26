@@ -23,8 +23,16 @@
           </button>
           <button class="deck--del--whole">Delete the whole deck</button>
           <div class="deck--language">
-            <label for="lang"><h3>Language</h3></label>
+            <h3>Language</h3>
+            <label for="lang" class="lang--label">Choose a language:</label>
             <select id="lang" class="deck--languages-options"></select>
+            <label for="lang_input" class="lang--add-label"
+              >Add a new language:</label
+            >
+            <div>
+              <input type="text" id="lang_input" />
+              <button class="lang--add-btn">Add</button>
+            </div>
           </div>
           <div class="deck--mode">
             <h3>Mode</h3>

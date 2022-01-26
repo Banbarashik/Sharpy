@@ -217,3 +217,10 @@ input[value='Start'] {
 
 .deck--del--whole {
   grid-column-end: 4; }
+
+.lang--label,
+.lang--add-label {
+  font-size: 1.3rem; }
+
+#lang_input {
+  width: 15rem; }

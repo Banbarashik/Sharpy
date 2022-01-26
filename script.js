@@ -82,11 +82,14 @@ hatInTimeDeck.cards.russian = [
   new Card('На каком движке создан "A Hat in Time"?', 'Unreal Engine 3'),
 ];
 
-// Array containing all cards
 const decks = [skyrimDeck, hatInTimeDeck];
 
 function capitalizeFirstLetter(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function toNormalCase(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
 
 const openDeckWindow = function (e, deck) {
@@ -770,3 +773,19 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
     }
   });
 })();
+
+document.querySelector('.lang--add-btn').addEventListener('click', e => {
+  e.preventDefault();
+
+  const langsSelectList = document.querySelector('.deck--languages-options');
+  const langInput = document.getElementById('lang_input');
+  const newLang = document.createElement('option');
+  newLang.textContent = toNormalCase(langInput.value);
+
+  curDeck.languages.push(newLang.textContent);
+  curDeck.cards[newLang.textContent.toLowerCase()] = [];
+
+  langsSelectList.add(newLang);
+
+  langInput.value = '';
+});
