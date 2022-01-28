@@ -11,6 +11,7 @@ const deckLangsOptions = document.querySelector('.deck--languages-options');
 const deckModesList = document.querySelector('.deck--modes-list');
 const deckDeleteCurLangBtn = document.querySelector('.deck--del--cur-lang');
 const deckDeleteWholeBtn = document.querySelector('.deck--del--whole');
+const decksSearch = document.querySelector('.decks--search');
 const btnStart = document.querySelector('input[value="Start"]');
 const card = document.querySelector('.card');
 const createNewDeckIcon = document.querySelector('.deck--item-create');
@@ -829,6 +830,18 @@ addNewLangBtn.addEventListener('click', e => {
   langsSelectList.add(newLang);
 
   langInput.value = '';
+});
+
+decksSearch.addEventListener('keyup', () => {
+  const decks = document.querySelectorAll('.deck--item');
+  const input = decksSearch.value.toLowerCase();
+
+  decks.forEach((deck, i) => {
+    if (i === 0) return;
+    if (deck.dataset.deckName.toLowerCase().includes(input)) {
+      deck.style.display = 'flex';
+    } else deck.style.display = 'none';
+  });
 });
 
 cardsSearch.addEventListener('keyup', () => {
