@@ -152,7 +152,6 @@ const openDeckWindow = function (e, deck) {
   deckOptions.style.display = 'grid';
 
   fillDeckOptions(deck.languages, deckLangsOptions, 'option');
-  fillDeckOptions(deck.modes, deckModesList, 'input');
 
   const langOpt = document.querySelector('.deck--languages-options');
   deck.curLang = deck.curLang ? deck.curLang : langOpt.value.toLowerCase();
@@ -172,23 +171,8 @@ const fillDeckOptions = function (prop, list, elem) {
 
   prop.forEach(propValue => {
     const item = document.createElement(elem);
-
-    if (elem === 'input') {
-      const id = propValue.replace(' ', '_');
-
-      list.insertAdjacentHTML(
-        'beforeend',
-        `<li>
-            <input type="radio" name="mode" id="${id}" ${
-          propValue === 'Flashcards' ? 'checked' : ''
-        }>
-            <label for="${id}">${propValue}</label>
-           </li>`
-      );
-    } else {
-      item.textContent = propValue;
-      list.appendChild(item);
-    }
+    item.textContent = propValue;
+    list.appendChild(item);
   });
 };
 
