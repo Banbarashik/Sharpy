@@ -63,7 +63,7 @@ skyrimDeck.cards.english = [
   new Card('What is the level cap?', '81'),
 ];
 skyrimDeck.cards.russian = [
-  new Card('Как зовут главного героя?', 'Довакин'),
+  new Card('Как зовут главного героя?', 'Довакин', 'http://tny.im/r9x'),
   new Card('В каком году игра была выпущена?', '2011'),
   new Card('Каков максимальный уровень игрока?', '81'),
 ];
@@ -428,7 +428,7 @@ const displayListOfCards = function () {
   cardsBlockWrapper.prepend(cardsSearch);
   cardsBlockWrapper.appendChild(btnAddNewCard);
 
-  curDeck.cards[curDeck.curLang].forEach(card =>
+  curDeck.cards[curDeck.curLang].forEach(card => {
     listOfCardsContainer.insertAdjacentHTML(
       'beforeend',
       `<li class="card--sides-block" draggable="true">
@@ -437,7 +437,11 @@ const displayListOfCards = function () {
         </div>
         <div class="card--bside-separate">
           <p class="card--bside-a">${card.a}</p>
-          <img class="card--img" src="${card.img}">
+          ${
+            card.img
+              ? `<img class="card--img" src="${card.img}" draggable="false">`
+              : ''
+          }
         </div>
         <div class="card--btns">
           <button class="card--btn-up">
@@ -469,8 +473,8 @@ const displayListOfCards = function () {
           </button>
         </div>
        </li>`
-    )
-  );
+    );
+  });
 
   cardsDnD();
 };
@@ -728,12 +732,12 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
       'beforeend',
       `<li class="card--sides-block card--not-created">
       <div class="card--fside-separate card--side-separate">
-        <div class="card-q card--add-q" contenteditable="true" placeholder="Enter front-side text">
+        <div class="card-q card--input-q" contenteditable="true" placeholder="Enter front-side text">
         </div>
       </div>
       <div class="card--bside-separate card--side-separate">
-        <input type="text" class="card-a card--add-a" />
-        <input type="url" class="card--add-img" placeholder="https://imgur.com" />
+        <input type="text" class="card-a card--input-a" />
+        <input type="url" class="card--input-img" placeholder="https://imgur.com" />
       </div>
       <div class="card--btns">
         <button class="card--btn-check">
@@ -753,9 +757,9 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
     if (e.target.closest('.card--btn-check')) {
       const curCardBlock = e.target.closest('.card--sides-block');
 
-      const q = curCardBlock.querySelector('.card--add-q');
-      const a = curCardBlock.querySelector('.card--add-a');
-      const img = curCardBlock.querySelector('.card--add-img');
+      const q = curCardBlock.querySelector('.card--input-q');
+      const a = curCardBlock.querySelector('.card--input-a');
+      const img = curCardBlock.querySelector('.card--input-img');
 
       curCardBlock.classList.remove('card--not-created');
       curCardBlock.setAttribute('draggable', 'true');
@@ -768,7 +772,11 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
         </div>
         <div class="card--bside-separate">
           <p class="card--bside-a">${a.value}</p>
-          <img class="card--img" src="${img.value}">
+          ${
+            img.value
+              ? `<img class="card--img" src="${img.value}" draggable="false">`
+              : ''
+          }
         </div>
         <div class="card--btns">
           <button class="card--btn-up">
