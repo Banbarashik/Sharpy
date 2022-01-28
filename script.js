@@ -118,10 +118,16 @@ const updateCardsNum = function (operation) {
     deck => deck.dataset.deckName === curDeck.name
   );
   const cardsNum = curDeckIcon.querySelector('.deck--cards-num');
-  cardsNum.textContent =
-    operation === 'increment'
-      ? Number(++cardsNum.textContent)
-      : Number(--cardsNum.textContent);
+
+  if (operation === 'increment' || operation === 'decrement') {
+    cardsNum.textContent =
+      operation === 'increment'
+        ? Number(++cardsNum.textContent)
+        : Number(--cardsNum.textContent);
+  } else if (operation === 'subtraction') {
+    cardsNum.textContent =
+      +cardsNum.textContent - curDeck.cards[curDeck.curLang].length;
+  }
 };
 
 const openDeckWindow = function (e, deck) {
@@ -702,6 +708,8 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
   const langForDeletionIndex = curDeck.languages.findIndex(
     lang => lang === capitalizeFirstLetter(curDeck.curLang)
   );
+
+  updateCardsNum('subtraction');
 
   curDeck.languages.splice(langForDeletionIndex, 1);
   delete curDeck.cards[curDeck.curLang];
