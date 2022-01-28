@@ -437,6 +437,7 @@ const displayListOfCards = function () {
         </div>
         <div class="card--bside-separate">
           <p class="card--bside-a">${card.a}</p>
+          <img class="card--img" src="${card.img}">
         </div>
         <div class="card--btns">
           <button class="card--btn-up">
@@ -767,6 +768,7 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
         </div>
         <div class="card--bside-separate">
           <p class="card--bside-a">${a.value}</p>
+          <img class="card--img" src="${img.value}">
         </div>
         <div class="card--btns">
           <button class="card--btn-up">

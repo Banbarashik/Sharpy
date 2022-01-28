@@ -85,7 +85,7 @@ input[value='Start'] {
 
 .card--bside-separate, .card--bside {
   display: grid;
-  grid-template-areas: 'answer picture' '. additional';
+  grid-template: 'answer picture' min-content '. additional';
   background-color: #ccc; }
 
 .card--fside, .card--bside {
@@ -233,3 +233,9 @@ input[value='Start'] {
   border-radius: 1rem;
   background-color: #333;
   opacity: 0.7; }
+
+.card--img {
+  width: 12rem;
+  height: 12rem;
+  border-radius: 1rem;
+  justify-self: end; }

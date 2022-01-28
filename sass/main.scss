@@ -134,8 +134,8 @@ input[value='Start'] {
 }
 %card-bside {
   display: grid;
-  grid-template-areas:
-    'answer picture'
+  grid-template:
+    'answer picture' min-content
     '. additional';
 
   background-color: #ccc;
@@ -358,4 +358,11 @@ input[value='Start'] {
   border-radius: 1rem;
   background-color: #333;
   opacity: 0.7;
+}
+
+.card--img {
+  width: 12rem;
+  height: 12rem;
+  border-radius: 1rem;
+  justify-self: end;
 }
