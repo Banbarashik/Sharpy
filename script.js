@@ -34,15 +34,19 @@ cardsSearch.setAttribute('placeholder', 'search for a card...');
 // State variables
 let curDeck;
 let order = 'random';
+let numToShow;
+let numOfCardsShown = 1;
 
 class Deck {
-  constructor(name, author, languages) {
+  constructor(name, author, languages, color) {
     this.name = name;
     this.author = author;
     this.languages = languages;
     this.modes = ['Flashcards', 'Multiple choice'];
     this.cards = {};
     this.curLang = null;
+
+    this.iconColor = color;
   }
 }
 
@@ -480,6 +484,7 @@ const initDeck = function () {
     decksList.appendChild(deckItemEl);
 
     deckItemEl.textContent = deck.name.slice(0, 1);
+    deckItemEl.style.backgroundColor = deck.iconColor;
 
     deckItemEl.dataset.deckName = deck.name;
 
@@ -559,9 +564,6 @@ const displayCard = function (cards) {
   );
 };
 
-let numToShow;
-let numOfCardsShown = 1;
-
 // START BUTTON
 btnStart.addEventListener('click', e => {
   e.preventDefault();
@@ -581,6 +583,7 @@ btnNextCard.addEventListener('click', () => {
   numOfCardsShown++;
   if (numOfCardsShown > numToShow) {
     appMainArea.removeChild(document.querySelector('.card--container'));
+    appMainArea.removeChild(btnNextCard);
     endMessage.style.display = 'block';
     numOfCardsShown = 1;
   } else displayCard(curDeck.cards[curDeck.curLang]);
@@ -607,6 +610,7 @@ document
   const newDeckName = document.getElementById('deck_name');
   const newDeckAuthor = document.getElementById('deck_author');
   const newDeckLang = document.getElementById('deck_lang');
+  const newDeckColor = document.getElementById('deck_icon_color');
   const errMessage = document.querySelector('.deck--err-message');
   const createNewDeckBtn = document.querySelector('.deck--create-btn');
 
@@ -649,7 +653,12 @@ document
 
     lang = newDeckLang.value;
 
-    newDeck = new Deck(newDeckName.value, newDeckAuthor.value, [lang]);
+    newDeck = new Deck(
+      newDeckName.value,
+      newDeckAuthor.value,
+      [lang],
+      newDeckColor.value
+    );
     newDeck.curLang = lang.toLowerCase();
     newDeck.cards[lang.toLowerCase()] = [];
 
