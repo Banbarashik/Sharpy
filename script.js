@@ -18,6 +18,13 @@ const createNewDeckIcon = document.querySelector('.deck--item-create');
 const createNewCardWindow = document.querySelector('.card--create');
 const addNewLangBtn = document.querySelector('.lang--add-btn');
 
+const langInput = document.getElementById('lang_input');
+langInput.addEventListener('keydown', e => {
+  if (e.key >= 0 || e.key <= 0) e.preventDefault();
+});
+
+const numToShowInput = document.getElementById('cards_num_input');
+
 // Creating DOM elements
 const btnNextCard = document.createElement('button');
 btnNextCard.classList.add('btn--next-card');
@@ -199,6 +206,9 @@ const openDeckWindow = function (e, deck) {
   } else {
     document.querySelector('.cards-list-container').remove();
   }
+
+  numToShowInput.value = '';
+  wrongNumMessage.remove();
 };
 
 // CREATE DECK'S OPTIONS
@@ -607,7 +617,7 @@ btnStart.addEventListener('click', e => {
   e.preventDefault();
 
   const numOptionsBlock = document.querySelector('.deck--option--cards-num');
-  const numToShowValue = +document.getElementById('cards_num_input').value;
+  const numToShowValue = +numToShowInput.value;
 
   if (
     numToShowValue > 0 &&
@@ -625,6 +635,7 @@ btnStart.addEventListener('click', e => {
 
     displayCard(curDeck.cards[curDeck.curLang]);
 
+    numToShowInput.value = '';
     wrongNumMessage.remove();
   } else numOptionsBlock.appendChild(wrongNumMessage);
 });
@@ -902,7 +913,7 @@ addNewLangBtn.addEventListener('click', e => {
   e.preventDefault();
 
   const langsSelectList = document.querySelector('.deck--languages-options');
-  const langInput = document.getElementById('lang_input');
+
   const newLang = document.createElement('option');
   newLang.textContent = toNormalCase(langInput.value);
 
