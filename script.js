@@ -60,7 +60,12 @@ class Card {
   }
 }
 
-const skyrimDeck = new Deck('Skyrim', 'Wadim', ['Russian', 'English']);
+const skyrimDeck = new Deck(
+  'Skyrim',
+  'Wadim',
+  ['Russian', 'English'],
+  '#000000'
+);
 skyrimDeck.cards.english = [
   new Card('What is the name of the main character?', 'Dovahkiin'),
   new Card('When the game was released?', '2011'),
@@ -72,7 +77,12 @@ skyrimDeck.cards.russian = [
   new Card('Каков максимальный уровень игрока?', '81'),
 ];
 
-const hatInTimeDeck = new Deck('A Hat in Time', 'Lexa', ['Russian', 'English']);
+const hatInTimeDeck = new Deck(
+  'A Hat in Time',
+  'Lexa',
+  ['Russian', 'English'],
+  '#000000'
+);
 hatInTimeDeck.cards.english = [
   new Card('Who is the main antagonist?', 'Mustache girl'),
   new Card('When the game was released?', '2017'),
@@ -93,6 +103,16 @@ hatInTimeDeck.cards.russian = [
 ];
 
 const decks = [skyrimDeck, hatInTimeDeck];
+
+function invertToBlackOrWhite(hex) {
+  hex = hex.slice(1);
+
+  const r = parseInt(hex.slice(0, 2), 16),
+    g = parseInt(hex.slice(2, 4), 16),
+    b = parseInt(hex.slice(4, 6), 16);
+
+  return r * 0.299 + g * 0.587 + b * 0.114 > 186 ? '#000000' : '#FFFFFF';
+}
 
 function capitalizeFirstLetter(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -485,6 +505,7 @@ const initDeck = function () {
 
     deckItemEl.textContent = deck.name.slice(0, 1);
     deckItemEl.style.backgroundColor = deck.iconColor;
+    deckItemEl.style.color = invertToBlackOrWhite(deck.iconColor);
 
     deckItemEl.dataset.deckName = deck.name;
 

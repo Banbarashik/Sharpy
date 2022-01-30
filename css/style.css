@@ -232,7 +232,8 @@ input[value='Start'] {
   padding: 1rem;
   border-radius: 1rem;
   background-color: #333;
-  opacity: 0.7; }
+  opacity: 0.7;
+  color: #fff; }
 
 .card--img {
   width: 12rem;
