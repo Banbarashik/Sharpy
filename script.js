@@ -506,11 +506,11 @@ const initDeck = function () {
 initDeck();
 
 // Function creating a card HTML element
-const displayCard = function (deck) {
-  const deckNotShownYet = deck.filter(card => card.shown === false);
+const displayCard = function (cards) {
+  const cardsNotShownYet = cards.filter(card => card.shown === false);
 
   // END OF A DECK
-  if (deckNotShownYet.length === 0) {
+  if (cardsNotShownYet.length === 0) {
     appMainArea.removeChild(document.querySelector('.card--container'));
     appMainArea.removeChild(btnNextCard);
 
@@ -527,16 +527,16 @@ const displayCard = function (deck) {
       `<div class="card--container">
           <article class="card">
             <div class="card--fside">
-              <p class="card--fside-q">${deckNotShownYet[card].q}</p>
+              <p class="card--fside-q">${cardsNotShownYet[card].q}</p>
             </div>
             <div class="card--bside">
-              <p class="card--bside-a">${deckNotShownYet[card].a}</p>
+              <p class="card--bside-a">${cardsNotShownYet[card].a}</p>
             </div>
           </article>
        </div>`
     );
 
-    deckNotShownYet[card].shown = true;
+    cardsNotShownYet[card].shown = true;
   };
 
   if (document.querySelector('.card--container')) {
@@ -544,7 +544,7 @@ const displayCard = function (deck) {
   }
 
   if (order === 'random') {
-    const randomCard = Math.floor(Math.random() * deckNotShownYet.length);
+    const randomCard = Math.floor(Math.random() * cardsNotShownYet.length);
     generateCardEl(randomCard);
   } else if (order === 'original') {
     let i;
@@ -559,6 +559,9 @@ const displayCard = function (deck) {
   );
 };
 
+let numToShow;
+let numOfCardsShown = 1;
+
 // START BUTTON
 btnStart.addEventListener('click', e => {
   e.preventDefault();
@@ -569,12 +572,19 @@ btnStart.addEventListener('click', e => {
 
   appMainArea.appendChild(btnNextCard);
 
+  numToShow = +document.getElementById('cards_num_input').value;
+
   displayCard(curDeck.cards[curDeck.curLang]);
 });
 
-btnNextCard.addEventListener('click', () =>
-  displayCard(curDeck.cards[curDeck.curLang])
-);
+btnNextCard.addEventListener('click', () => {
+  numOfCardsShown++;
+  if (numOfCardsShown > numToShow) {
+    appMainArea.removeChild(document.querySelector('.card--container'));
+    endMessage.style.display = 'block';
+    numOfCardsShown = 1;
+  } else displayCard(curDeck.cards[curDeck.curLang]);
+});
 
 document
   .querySelector('.deck--languages-options')
