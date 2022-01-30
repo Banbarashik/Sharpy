@@ -38,6 +38,11 @@ cardsNumBlock.insertAdjacentHTML(
   `<span class="card--curNum">1</span>/<span class="cards--totalNum"></span>`
 );
 
+const wrongNumMessage = document.createElement('p');
+wrongNumMessage.classList.add('wrong-num-message');
+wrongNumMessage.textContent =
+  'Number of cards should be greater than 0 and less than the total number of cards in the deck';
+
 // State variables
 let curDeck;
 let order = 'random';
@@ -601,17 +606,27 @@ const displayCard = function (cards) {
 btnStart.addEventListener('click', e => {
   e.preventDefault();
 
-  document.querySelector('.cards-list-container').remove();
+  const numOptionsBlock = document.querySelector('.deck--option--cards-num');
+  const numToShowValue = +document.getElementById('cards_num_input').value;
 
-  deckOptions.style.display = 'none';
+  if (
+    numToShowValue > 0 &&
+    numToShowValue <= curDeck.cards[curDeck.curLang].length
+  ) {
+    document.querySelector('.cards-list-container').remove();
 
-  numToShow = +document.getElementById('cards_num_input').value;
+    deckOptions.style.display = 'none';
 
-  appMainArea.appendChild(btnNextCard);
-  appMainArea.appendChild(cardsNumBlock);
-  document.querySelector('.cards--totalNum').textContent = numToShow;
+    numToShow = numToShowValue;
 
-  displayCard(curDeck.cards[curDeck.curLang]);
+    appMainArea.appendChild(btnNextCard);
+    appMainArea.appendChild(cardsNumBlock);
+    document.querySelector('.cards--totalNum').textContent = numToShow;
+
+    displayCard(curDeck.cards[curDeck.curLang]);
+
+    wrongNumMessage.remove();
+  } else numOptionsBlock.appendChild(wrongNumMessage);
 });
 
 btnNextCard.addEventListener('click', () => {
@@ -621,6 +636,8 @@ btnNextCard.addEventListener('click', () => {
     appMainArea.removeChild(btnNextCard);
     endMessage.style.display = 'block';
     numOfCardsShown = 1;
+
+    document.querySelector('.card--curNum').textContent = 1;
   } else {
     document.querySelector('.card--curNum').textContent = Number(
       ++document.querySelector('.card--curNum').textContent
