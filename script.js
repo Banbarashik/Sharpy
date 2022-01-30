@@ -31,6 +31,13 @@ const cardsSearch = document.createElement('input');
 cardsSearch.setAttribute('type', 'text');
 cardsSearch.setAttribute('placeholder', 'search for a card...');
 
+const cardsNumBlock = document.createElement('p');
+cardsNumBlock.classList.add('card--state-nums');
+cardsNumBlock.insertAdjacentHTML(
+  'beforeend',
+  `<span class="card--curNum">1</span>/<span class="cards--totalNum"></span>`
+);
+
 // State variables
 let curDeck;
 let order = 'random';
@@ -557,6 +564,11 @@ const displayCard = function (cards) {
             </div>
             <div class="card--bside">
               <p class="card--bside-a">${cardsNotShownYet[card].a}</p>
+              ${
+                cardsNotShownYet[card].img
+                  ? `<img class="card--img" src="${cardsNotShownYet[card].img}">`
+                  : ''
+              }
             </div>
           </article>
        </div>`
@@ -593,9 +605,11 @@ btnStart.addEventListener('click', e => {
 
   deckOptions.style.display = 'none';
 
-  appMainArea.appendChild(btnNextCard);
-
   numToShow = +document.getElementById('cards_num_input').value;
+
+  appMainArea.appendChild(btnNextCard);
+  appMainArea.appendChild(cardsNumBlock);
+  document.querySelector('.cards--totalNum').textContent = numToShow;
 
   displayCard(curDeck.cards[curDeck.curLang]);
 });
@@ -607,7 +621,12 @@ btnNextCard.addEventListener('click', () => {
     appMainArea.removeChild(btnNextCard);
     endMessage.style.display = 'block';
     numOfCardsShown = 1;
-  } else displayCard(curDeck.cards[curDeck.curLang]);
+  } else {
+    document.querySelector('.card--curNum').textContent = Number(
+      ++document.querySelector('.card--curNum').textContent
+    );
+    displayCard(curDeck.cards[curDeck.curLang]);
+  }
 });
 
 document
@@ -703,6 +722,10 @@ document
     );
 
     q.textContent = a.value = img.value = '';
+
+    curDeck = decks[decks.length - 1];
+
+    updateCardsNum('increment');
   });
 
   viewCreatedDeck.addEventListener('click', e => {
