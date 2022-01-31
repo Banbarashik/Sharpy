@@ -36,7 +36,8 @@ btnAddNewCard.textContent = 'Add a new card';
 
 const cardsSearch = document.createElement('input');
 cardsSearch.setAttribute('type', 'text');
-cardsSearch.setAttribute('placeholder', 'search for a card...');
+cardsSearch.setAttribute('placeholder', 'Search for a card');
+cardsSearch.classList.add('cards--search');
 
 const cardsNumBlock = document.createElement('p');
 cardsNumBlock.classList.add('card--state-nums');
@@ -87,7 +88,7 @@ const skyrimDeck = new Deck(
   'Skyrim',
   'Wadim',
   ['Russian', 'English'],
-  '#000000'
+  '#999999'
 );
 skyrimDeck.cards.english = [
   new Card('What is the name of the main character?', 'Dovahkiin'),
@@ -104,7 +105,7 @@ const hatInTimeDeck = new Deck(
   'A Hat in Time',
   'Lexa',
   ['Russian', 'English'],
-  '#000000'
+  '#999999'
 );
 hatInTimeDeck.cards.english = [
   new Card('Who is the main antagonist?', 'Mustache girl'),
@@ -179,6 +180,9 @@ const updateCardsNum = function (operation) {
 
 const openDeckWindow = function (e, deck) {
   e.preventDefault();
+
+  appMainArea.classList.remove('closed');
+  appMainArea.classList.add('opened');
 
   curDeck = deck;
 

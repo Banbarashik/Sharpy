@@ -14,13 +14,13 @@
         <input
           class="decks--search"
           type="text"
-          placeholder="Search for a deck..."
+          placeholder="Search for a deck"
         />
         <ul class="list-of-decks">
           <li class="deck--item deck--item-create">C</li>
         </ul>
       </div>
-      <div class="app--main-area">
+      <div class="app--main-area closed">
         <p class="app--start-message">Choose a deck to learn.</p>
         <form class="deck--options">
           <button class="deck--del--cur-lang">
@@ -65,7 +65,7 @@
           </div>
           <div class="deck--option--cards-num">
             <label for="cards_num_input">Set num of cards</label
-            ><input type="number" id="cards_num_input" />
+            ><input type="number" id="cards_num_input" min="1" />
           </div>
           <input type="submit" value="Start" />
         </form>

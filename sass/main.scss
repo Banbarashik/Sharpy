@@ -54,21 +54,36 @@ body {
   font-size: 2.2rem;
 }
 
+input,
+button {
+  border: none;
+  outline: none;
+
+  height: 3rem;
+  border-radius: 1rem;
+}
+
+button {
+  cursor: pointer;
+  font-size: 1.4rem;
+}
+
 .app--container {
-  // @include flex-container($justify: space-between);
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 5rem;
 
-  width: 90rem;
+  width: 100rem;
   padding: 5rem;
   border-radius: 20px;
   margin: 0 auto;
-
-  background-color: #999;
 }
 
 // APP SIDEBAR
+.app--sidebar {
+  width: 8rem;
+}
+
 .list-of-decks {
   display: flex;
   flex-direction: column;
@@ -78,19 +93,31 @@ body {
 .deck--item {
   @include flex-container;
 
-  width: 8rem;
   height: 8rem;
   border-radius: 1.6rem;
-
-  background-color: #000;
-
-  color: #fff;
 
   cursor: pointer;
 }
 
+.deck--item-create {
+  background-color: #555;
+  color: #fff;
+}
+
 // APP MAIN AREA
 .app--main-area {
+  border-radius: 3rem;
+  padding: 3rem;
+}
+
+.app--main-area.closed {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.app--main-area.opened {
+  background-color: #999;
 }
 
 .app--start-message,
@@ -232,7 +259,6 @@ input[value='Start'] {
   height: 4rem;
   border: none;
   border-radius: 0.5rem;
-  cursor: pointer;
 }
 
 .card--btn-up {
@@ -265,7 +291,7 @@ input[value='Start'] {
   height: 0.2rem;
   width: 7rem;
 
-  background-color: #999;
+  background-color: var(--bg-color);
 }
 
 .card--btn-up::after {
@@ -366,4 +392,36 @@ input[value='Start'] {
   height: 12rem;
   border-radius: 1rem;
   justify-self: end;
+}
+
+@mixin input_icon($img) {
+  background: #999 url($img) 0.5rem center/2.8rem no-repeat;
+}
+
+@mixin searchbars($mb) {
+  height: 4rem;
+  padding-left: 4rem;
+  margin-bottom: $mb;
+
+  font-size: 1.6rem;
+}
+
+.decks--search {
+  width: 35%;
+  transition: 0.3s;
+  background-color: #999;
+
+  cursor: pointer;
+
+  @include searchbars(1rem);
+  @include input_icon('../images/icons/search-outline.svg');
+}
+.decks--search:focus {
+  width: 220%;
+  cursor: auto;
+}
+
+.cards--search {
+  @include searchbars(2rem);
+  @include input_icon('../images/icons/cards.svg');
 }
