@@ -50,6 +50,10 @@ wrongNumMessage.classList.add('wrong-num-message');
 wrongNumMessage.textContent =
   'Number of cards should be greater than 0 and less than the total number of cards in the deck';
 
+const langIsEmptyMessage = document.createElement('p');
+langIsEmptyMessage.classList.add('lang-is-empty-message');
+langIsEmptyMessage.textContent = "The language field can't be empty";
+
 // State variables
 let curDeck;
 let order = 'random';
@@ -207,8 +211,10 @@ const openDeckWindow = function (e, deck) {
     document.querySelector('.cards-list-container').remove();
   }
 
-  numToShowInput.value = '';
+  langIsEmptyMessage.remove();
   wrongNumMessage.remove();
+  langInput.value = '';
+  numToShowInput.value = '';
 };
 
 // CREATE DECK'S OPTIONS
@@ -912,17 +918,23 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
 addNewLangBtn.addEventListener('click', e => {
   e.preventDefault();
 
-  const langsSelectList = document.querySelector('.deck--languages-options');
+  const langBlock = document.querySelector('.deck--language');
 
-  const newLang = document.createElement('option');
-  newLang.textContent = toNormalCase(langInput.value);
+  if (langInput.value !== '') {
+    const langsSelectList = document.querySelector('.deck--languages-options');
 
-  curDeck.languages.push(newLang.textContent);
-  curDeck.cards[newLang.textContent.toLowerCase()] = [];
+    const newLang = document.createElement('option');
+    newLang.textContent = toNormalCase(langInput.value);
 
-  langsSelectList.add(newLang);
+    curDeck.languages.push(newLang.textContent);
+    curDeck.cards[newLang.textContent.toLowerCase()] = [];
 
-  langInput.value = '';
+    langsSelectList.add(newLang);
+
+    langInput.value = '';
+
+    langIsEmptyMessage.remove();
+  } else langBlock.appendChild(langIsEmptyMessage);
 });
 
 decksSearch.addEventListener('keyup', () => {
