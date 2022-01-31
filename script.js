@@ -702,8 +702,8 @@ document
 
   createNewDeckIcon.addEventListener('click', () => {
     deckOptions.style.display = 'none';
-    if (document.querySelector('.cards-list-container'))
-      document.querySelector('.cards-list-container').remove();
+    const existingBlockWrapper = document.querySelector('.cards-block-wrapper');
+    if (existingBlockWrapper) existingBlockWrapper.remove();
 
     startMessage.style.display = 'none';
     createNewCardWindow.style.display = 'none';
