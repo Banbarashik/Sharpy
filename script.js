@@ -32,7 +32,7 @@ btnNextCard.textContent = 'Next card';
 
 const btnAddNewCard = document.createElement('button');
 btnAddNewCard.classList.add('cards--add-new');
-btnAddNewCard.textContent = 'Add a new card';
+btnAddNewCard.textContent = '+';
 
 const cardsSearch = document.createElement('input');
 cardsSearch.setAttribute('type', 'text');
