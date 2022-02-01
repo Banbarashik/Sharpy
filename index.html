@@ -24,7 +24,9 @@
         </ul>
       </div>
       <div class="app--main-area closed">
-        <p class="app--start-message">Choose a deck to learn.</p>
+        <p class="app--start-message">
+          Choose a deck to learn or create a new one.
+        </p>
         <form class="deck--options">
           <button class="deck--del--cur-lang">
             Delete the current language
@@ -32,14 +34,32 @@
           <button class="deck--del--whole">Delete the whole deck</button>
           <div class="deck--language">
             <h3>Language</h3>
-            <label for="lang" class="lang--label">Choose a language:</label>
+            <label for="lang" class="lang--label">Choose a language</label>
             <select id="lang" class="deck--languages-options"></select>
-            <label for="lang_input" class="lang--add-label"
-              >Add a new language:</label
-            >
-            <div>
-              <input type="text" id="lang_input" />
-              <button class="lang--add-btn">Add</button>
+            <label for="lang_input">or add new</label>
+            <div class="lang-add-block">
+              <input
+                type="text"
+                id="lang_input"
+                placeholder="e.g. Spanish"
+              /><button class="lang--add-btn">
+                <!-- Add -->
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="ionicon"
+                  viewBox="0 0 512 512"
+                >
+                  <title>Add</title>
+                  <path
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="32"
+                    d="M256 112v288M400 256H112"
+                  />
+                </svg>
+              </button>
             </div>
           </div>
           <div class="deck--cards-order">
@@ -53,7 +73,9 @@
                   value="random"
                   checked=""
                 />
-                <label for="order_random">Random</label>
+                <label for="order_random" class="order-random-label"
+                  >Random</label
+                >
               </li>
               <li>
                 <input
@@ -62,12 +84,14 @@
                   id="order_original"
                   value="original"
                 />
-                <label for="order_original">Original</label>
+                <label for="order_original" class="order-original-label"
+                  >Original</label
+                >
               </li>
             </ul>
           </div>
           <div class="deck--option--cards-num">
-            <label for="cards_num_input">Set num of cards</label
+            <label for="cards_num_input">Number of cards</label
             ><input type="number" id="cards_num_input" min="1" />
           </div>
           <input type="submit" value="Start" />

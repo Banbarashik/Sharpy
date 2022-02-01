@@ -54,6 +54,10 @@ body {
   font-size: 2.2rem;
 }
 
+h3 {
+  font-size: 2.4rem;
+}
+
 input,
 button {
   border: none;
@@ -75,7 +79,7 @@ input[type='submit'] {
   grid-template-rows: 31rem auto;
   gap: 5rem;
 
-  width: 100rem;
+  width: 95rem;
   padding: 5rem;
   padding-bottom: 10rem;
   border-radius: 20px;
@@ -372,11 +376,32 @@ input[value='Start'] {
 
 .lang--label,
 .lang--add-label {
-  font-size: 1.3rem;
+  font-size: 1.6rem;
+}
+
+.lang--label {
+  display: block;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+}
+
+.lang-add-block {
+  display: flex;
+  margin-top: 1rem;
 }
 
 #lang_input {
-  width: 15rem;
+  width: 12rem;
+  padding-left: 1rem;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.lang--add-btn {
+  width: 4rem;
+  padding: 0 0.5rem;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
 }
 
 .deck--info {
@@ -460,6 +485,7 @@ input[value='Start'] {
 
 .deck--language {
   @extend %option;
+  font-size: 1.6rem;
 }
 
 .deck--cards-order {
@@ -468,4 +494,38 @@ input[value='Start'] {
 
 .deck--option--cards-num {
   @extend %option;
+}
+
+.deck--cards-order-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+#order_random,
+#order_original {
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+}
+
+.order-random-label,
+.order-original-label {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  cursor: pointer;
+}
+
+.order-random-label::before,
+.order-original-label::before {
+  content: url(../images/icons/radio-button-off-outline.svg);
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.deck--cards-order-list input[type='radio']:checked + label::before {
+  content: url(../images/icons/radio-button-on-outline.svg);
 }
