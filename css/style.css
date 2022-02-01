@@ -40,6 +40,7 @@ input[type='submit'] {
 .app--container {
   display: grid;
   grid-template-columns: auto 1fr;
+  grid-template-rows: 31rem auto;
   gap: 5rem;
   width: 100rem;
   padding: 5rem;
@@ -304,3 +305,8 @@ input[value='Start'] {
 .ionicon-plus {
   width: 5rem;
   height: 5rem; }
+
+.deck--language, .deck--cards-order, .deck--option--cards-num {
+  border-radius: 1rem;
+  padding: 1rem;
+  background-color: var(--bg-color); }

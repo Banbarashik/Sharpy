@@ -535,7 +535,7 @@ const initDeck = function () {
     deckItemEl.classList.add('deck--item');
     decksList.appendChild(deckItemEl);
 
-    deckItemEl.textContent = deck.name.slice(0, 1);
+    deckItemEl.textContent = deck.name.slice(0, 1).toUpperCase();
     deckItemEl.style.backgroundColor = deck.iconColor;
     deckItemEl.style.color = invertToBlackOrWhite(deck.iconColor);
 
@@ -647,6 +647,8 @@ btnStart.addEventListener('click', e => {
 
     numToShowInput.value = '';
     wrongNumMessage.remove();
+    cardsSearch.remove();
+    btnAddNewCard.remove();
   } else numOptionsBlock.appendChild(wrongNumMessage);
 });
 
@@ -711,6 +713,8 @@ document
 
     startMessage.style.display = 'none';
     createNewCardWindow.style.display = 'none';
+    appMainArea.classList.remove('closed');
+    appMainArea.classList.add('opened');
 
     deckCreateWindow.style.display = 'flex';
 
@@ -785,6 +789,12 @@ deckDeleteWholeBtn.addEventListener('click', e => {
 
   deckOptions.style.display = 'none';
   document.querySelector('.cards-list-container').remove();
+
+  appMainArea.classList.remove('opened');
+  appMainArea.classList.add('closed');
+  startMessage.style.display = 'block';
+  cardsSearch.remove();
+  btnAddNewCard.remove();
 });
 
 deckDeleteCurLangBtn.addEventListener('click', e => {
@@ -974,7 +984,7 @@ cardsSearch.addEventListener('keyup', () => {
 });
 
 appSidebar.addEventListener('mousemove', e => {
-  const target = e.target.closest('.deck--item:not(.deck--item-create)');
+  const target = e.target.closest('.deck--item');
 
   if (target) {
     const deckInfoBlock = target.querySelector('.deck--info');

@@ -72,6 +72,7 @@ input[type='submit'] {
 .app--container {
   display: grid;
   grid-template-columns: auto 1fr;
+  grid-template-rows: 31rem auto;
   gap: 5rem;
 
   width: 100rem;
@@ -449,4 +450,22 @@ input[value='Start'] {
 .ionicon-plus {
   width: 5rem;
   height: 5rem;
+}
+
+%option {
+  border-radius: 1rem;
+  padding: 1rem;
+  background-color: var(--bg-color);
+}
+
+.deck--language {
+  @extend %option;
+}
+
+.deck--cards-order {
+  @extend %option;
+}
+
+.deck--option--cards-num {
+  @extend %option;
 }
