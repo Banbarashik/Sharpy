@@ -847,6 +847,8 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
   if (curDeck.languages.length === 0) {
     cardsSearch.remove();
     btnAddNewCard.remove();
+
+    btnStart.disabled = true;
   }
 });
 
@@ -961,6 +963,8 @@ addNewLangBtn.addEventListener('click', e => {
 
       cardsListWrapper.prepend(cardsSearch);
       cardsListWrapper.appendChild(btnAddNewCard);
+
+      btnStart.disabled = false;
     }
 
     const langsSelectList = document.querySelector('.deck--languages-options');
