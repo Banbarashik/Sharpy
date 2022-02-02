@@ -8,7 +8,8 @@ const endMessage = document.querySelector('.app--end-message');
 const decksList = document.querySelector('.list-of-decks');
 const deckOptions = document.querySelector('.deck--options');
 const deckLangsOptions = document.querySelector('.deck--languages-options');
-const deckModesList = document.querySelector('.deck--modes-list');
+const orderInputs = document.querySelectorAll('input[name="order"]');
+const orderLabels = document.querySelectorAll('input[name="order"] + label');
 const deckDeleteCurLangBtn = document.querySelector('.deck--del--cur-lang');
 const deckDeleteWholeBtn = document.querySelector('.deck--del--whole');
 const decksSearch = document.querySelector('.decks--search');
@@ -57,7 +58,6 @@ langIsEmptyMessage.textContent = "The language field can't be empty";
 
 // State variables
 let curDeck;
-let order = 'random';
 let numToShow;
 let numOfCardsShown = 1;
 
@@ -69,6 +69,7 @@ class Deck {
     this.modes = ['Flashcards', 'Multiple choice'];
     this.cards = {};
     this.curLang = null;
+    this.order = 'random';
 
     this.iconColor = color;
   }
@@ -207,6 +208,18 @@ const openDeckWindow = function (e, deck) {
   const langOpt = document.querySelector('.deck--languages-options');
   deck.curLang = deck.curLang ? deck.curLang : langOpt.value.toLowerCase();
   langOpt.value = capitalizeFirstLetter(deck.curLang);
+
+  orderInputs.forEach(input => {
+    const label = input.nextElementSibling;
+
+    if (deck.order === input.value) {
+      input.setAttribute('checked', '');
+      label.classList.add('checked');
+    } else {
+      input.removeAttribute('checked');
+      label.classList.remove('checked');
+    }
+  });
 
   if (deck.languages.length > 0) {
     displayListOfCards();
@@ -606,10 +619,10 @@ const displayCard = function (cards) {
     appMainArea.removeChild(document.querySelector('.card--container'));
   }
 
-  if (order === 'random') {
+  if (curDeck.order === 'random') {
     const randomCard = Math.floor(Math.random() * cardsNotShownYet.length);
     generateCardEl(randomCard);
-  } else if (order === 'original') {
+  } else if (curDeck.order === 'original') {
     let i;
     if (i === undefined) i = 0;
     else i++;
@@ -678,11 +691,18 @@ document
     makeCardsMovableByBtns();
   });
 
-document
-  .getElementsByName('order')
-  .forEach(input =>
-    input.addEventListener('input', e => (order = e.target.value))
-  );
+orderInputs.forEach(input => {
+  const label = input.nextElementSibling;
+  input.addEventListener('click', () => {
+    curDeck.order = input.value;
+
+    orderInputs.forEach(input => input.removeAttribute('checked'));
+    input.setAttribute('checked', '');
+
+    orderLabels.forEach(label => label.classList.remove('checked'));
+    label.classList.add('checked');
+  });
+});
 
 (function () {
   // DECK
@@ -819,14 +839,8 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
 
   deckLangsOptions.value = capitalizeFirstLetter(curDeck.curLang);
 
-  console.log(curDeck, curDeck.curLang, curDeck.languages);
-
-  if (curDeck.languages.length > 0) {
-    displayListOfCards();
-    makeCardsMovableByBtns();
-  } else {
-    document.querySelector('.cards-list-container').remove();
-  }
+  displayListOfCards();
+  makeCardsMovableByBtns();
 });
 
 (function () {
