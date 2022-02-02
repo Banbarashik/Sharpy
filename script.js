@@ -487,10 +487,11 @@ const displayListOfCards = function () {
   cardsBlockWrapper.prepend(cardsSearch);
   cardsBlockWrapper.appendChild(btnAddNewCard);
 
-  curDeck.cards[curDeck.curLang].forEach(card => {
-    listOfCardsContainer.insertAdjacentHTML(
-      'beforeend',
-      `<li class="card--sides-block" draggable="true">
+  if (Object.keys(curDeck.cards).length > 0) {
+    curDeck.cards[curDeck.curLang].forEach(card => {
+      listOfCardsContainer.insertAdjacentHTML(
+        'beforeend',
+        `<li class="card--sides-block" draggable="true">
         <div class="card--fside-separate">
           <p class="card--fside-q">${card.q}</p>
         </div>
@@ -532,8 +533,9 @@ const displayListOfCards = function () {
           </button>
         </div>
        </li>`
-    );
-  });
+      );
+    });
+  }
 
   cardsDnD();
 };
@@ -841,6 +843,11 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
 
   displayListOfCards();
   makeCardsMovableByBtns();
+
+  if (curDeck.languages.length === 0) {
+    cardsSearch.remove();
+    btnAddNewCard.remove();
+  }
 });
 
 (function () {
@@ -949,6 +956,13 @@ addNewLangBtn.addEventListener('click', e => {
   const langBlock = document.querySelector('.deck--language');
 
   if (langInput.value !== '') {
+    if (curDeck.languages.length === 0) {
+      const cardsListWrapper = document.querySelector('.cards-block-wrapper');
+
+      cardsListWrapper.prepend(cardsSearch);
+      cardsListWrapper.appendChild(btnAddNewCard);
+    }
+
     const langsSelectList = document.querySelector('.deck--languages-options');
 
     const newLang = document.createElement('option');
@@ -960,6 +974,9 @@ addNewLangBtn.addEventListener('click', e => {
     langsSelectList.add(newLang);
 
     langInput.value = '';
+
+    // set the newly created lang as a curLang
+    curDeck.curLang = newLang.textContent.toLowerCase();
 
     langIsEmptyMessage.remove();
   } else langBlock.appendChild(langIsEmptyMessage);
