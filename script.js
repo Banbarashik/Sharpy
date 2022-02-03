@@ -993,9 +993,12 @@ addNewLangBtn.addEventListener('click', e => {
 
     // set the newly created lang as a curLang
     curDeck.curLang = newLang.textContent.toLowerCase();
+
     displayListOfCards();
     makeCardsBtnsActive();
     deckLangsOptions.value = toNormalCase(curDeck.curLang);
+
+    btnStart.disabled = true;
 
     langIsEmptyMessage.remove();
   } else langBlock.appendChild(langIsEmptyMessage);
