@@ -235,8 +235,6 @@ const openDeckWindow = function (e, deck) {
     document.querySelector('.cards-list-container').remove();
   }
 
-  disableBtnStartIfNoCards(deck);
-
   langIsEmptyMessage.remove();
   wrongNumMessage.remove();
   langInput.value = '';
@@ -854,7 +852,6 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
 
   deckLangsOptions.value = capitalizeFirstLetter(curDeck.curLang);
 
-  // disableBtnStartIfNoCards(curDeck);
   displayListOfCards();
   makeCardsBtnsActive();
 
