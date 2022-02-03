@@ -853,6 +853,7 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
 
   deckLangsOptions.value = capitalizeFirstLetter(curDeck.curLang);
 
+  // disableBtnStartIfNoCards(curDeck);
   displayListOfCards();
   makeCardsMovableByBtns();
 
@@ -992,6 +993,8 @@ addNewLangBtn.addEventListener('click', e => {
 
     // set the newly created lang as a curLang
     curDeck.curLang = newLang.textContent.toLowerCase();
+    displayListOfCards();
+    deckLangsOptions.value = toNormalCase(curDeck.curLang);
 
     langIsEmptyMessage.remove();
   } else langBlock.appendChild(langIsEmptyMessage);
