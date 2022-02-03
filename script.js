@@ -68,7 +68,7 @@ class Deck {
     this.languages = languages;
     this.modes = ['Flashcards', 'Multiple choice'];
     this.cards = {};
-    this.curLang = null;
+    this.curLang = '';
     this.order = 'random';
 
     this.iconColor = color;
@@ -226,7 +226,7 @@ const openDeckWindow = function (e, deck) {
     makeCardsMovableByBtns();
     btnStart.disabled = false;
   } else {
-    document.querySelector('.cards-list-container').remove();
+    // document.querySelector('.cards-list-container').remove();
     btnStart.disabled = true;
     cardsSearch.remove();
     btnAddNewCard.remove();
@@ -841,6 +841,8 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
 
   if (curDeck.languages.length > 0) {
     curDeck.curLang = curDeck.languages[0].toLowerCase();
+  } else {
+    curDeck.curLang = '';
   }
 
   deckLangsOptions.value = capitalizeFirstLetter(curDeck.curLang);
