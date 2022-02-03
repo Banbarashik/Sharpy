@@ -232,6 +232,7 @@ const openDeckWindow = function (e, deck) {
     btnStart.disabled = true;
     cardsSearch.remove();
     btnAddNewCard.remove();
+    document.querySelector('.cards-list-container').remove();
   }
 
   disableBtnStartIfNoCards(deck);
