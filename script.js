@@ -226,7 +226,7 @@ const openDeckWindow = function (e, deck) {
 
   if (deck.languages.length > 0) {
     displayListOfCards();
-    makeCardsMovableByBtns();
+    makeCardsBtnsActive();
     btnStart.disabled = false;
   } else {
     btnStart.disabled = true;
@@ -279,7 +279,7 @@ const disableFirstAndLastBtns = function () {
   });
 };
 
-const makeCardsMovableByBtns = function () {
+const makeCardsBtnsActive = function () {
   const currentList = document.querySelector('.cards-list-container');
 
   const moveArrElem = function (arr, fromIndex, toIndex) {
@@ -699,7 +699,7 @@ document
     curDeck.curLang = e.target.value.toLowerCase();
 
     displayListOfCards();
-    makeCardsMovableByBtns();
+    makeCardsBtnsActive();
     disableBtnStartIfNoCards(curDeck);
   });
 
@@ -855,7 +855,7 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
 
   // disableBtnStartIfNoCards(curDeck);
   displayListOfCards();
-  makeCardsMovableByBtns();
+  makeCardsBtnsActive();
 
   if (curDeck.languages.length === 0) {
     cardsSearch.remove();
@@ -994,7 +994,7 @@ addNewLangBtn.addEventListener('click', e => {
     // set the newly created lang as a curLang
     curDeck.curLang = newLang.textContent.toLowerCase();
     displayListOfCards();
-    makeCardsMovableByBtns();
+    makeCardsBtnsActive();
     deckLangsOptions.value = toNormalCase(curDeck.curLang);
 
     langIsEmptyMessage.remove();
