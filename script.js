@@ -224,8 +224,12 @@ const openDeckWindow = function (e, deck) {
   if (deck.languages.length > 0) {
     displayListOfCards();
     makeCardsMovableByBtns();
+    btnStart.disabled = false;
   } else {
     document.querySelector('.cards-list-container').remove();
+    btnStart.disabled = true;
+    cardsSearch.remove();
+    btnAddNewCard.remove();
   }
 
   langIsEmptyMessage.remove();
