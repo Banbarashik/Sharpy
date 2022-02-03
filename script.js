@@ -161,6 +161,9 @@ const getLI = function (target) {
   }
 };
 
+const disableBtnStartIfNoCards = deck =>
+  (btnStart.disabled = deck.cards[deck.curLang].length === 0 ? true : false);
+
 const updateCardsNum = function (operation) {
   const decksIcons = [...decksList.children];
   const curDeckIcon = decksIcons.find(
@@ -226,11 +229,12 @@ const openDeckWindow = function (e, deck) {
     makeCardsMovableByBtns();
     btnStart.disabled = false;
   } else {
-    // document.querySelector('.cards-list-container').remove();
     btnStart.disabled = true;
     cardsSearch.remove();
     btnAddNewCard.remove();
   }
+
+  disableBtnStartIfNoCards(deck);
 
   langIsEmptyMessage.remove();
   wrongNumMessage.remove();
@@ -354,6 +358,7 @@ const makeCardsMovableByBtns = function () {
       else {
         cardBlock.remove();
         updateCardsNum('decrement');
+        disableBtnStartIfNoCards(curDeck);
       }
 
       updateIndices();
@@ -695,6 +700,7 @@ document
 
     displayListOfCards();
     makeCardsMovableByBtns();
+    disableBtnStartIfNoCards(curDeck);
   });
 
 orderInputs.forEach(input => {
@@ -952,6 +958,7 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
       );
 
       disableFirstAndLastBtns();
+      btnStart.disabled = false;
 
       updateCardsNum('increment');
     }
@@ -969,8 +976,6 @@ addNewLangBtn.addEventListener('click', e => {
 
       cardsListWrapper.prepend(cardsSearch);
       cardsListWrapper.appendChild(btnAddNewCard);
-
-      btnStart.disabled = false;
     }
 
     const langsSelectList = document.querySelector('.deck--languages-options');
