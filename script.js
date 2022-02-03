@@ -244,7 +244,6 @@ const openDeckWindow = function (e, deck) {
   langIsEmptyMessage.remove();
   wrongNumMessage.remove();
   langInput.value = '';
-  numToShowInput.value = '';
 };
 
 // CREATE DECK'S OPTIONS
@@ -676,7 +675,6 @@ btnStart.addEventListener('click', e => {
 
     displayCard(curDeck.cards[curDeck.curLang]);
 
-    numToShowInput.value = '';
     wrongNumMessage.remove();
     cardsSearch.remove();
     btnAddNewCard.remove();
