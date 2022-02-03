@@ -52,17 +52,30 @@ input[type='submit'] {
   margin: 0 auto; }
 
 .app--sidebar {
-  width: 8rem; }
+  width: 10.5rem; }
 
 .list-of-decks {
+  scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
   display: flex;
   flex-direction: column;
-  gap: 1rem; }
+  gap: 1rem;
+  max-height: 26rem;
+  padding-right: 1.5rem;
+  overflow-x: hidden;
+  overflow-y: auto; }
+  .list-of-decks::-webkit-scrollbar {
+    width: 1rem; }
+  .list-of-decks::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 1rem; }
 
 .deck--item {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-shrink: 0;
   height: 8rem;
   border-radius: 1.6rem;
   cursor: pointer; }
