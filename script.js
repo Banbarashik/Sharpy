@@ -206,7 +206,6 @@ const openDeckWindow = function (e, deck) {
 
   createNewCardWindow.style.display = 'none';
   document.querySelector('.deck--create').style.display = 'none';
-
   startMessage.style.display = endMessage.style.display = 'none';
   deckOptions.style.display = 'grid';
 
@@ -238,6 +237,9 @@ const openDeckWindow = function (e, deck) {
     btnAddNewCard.remove();
     document.querySelector('.cards-list-container').remove();
   }
+
+  if (deck.curLang && deck.cards[deck.curLang].length === 0)
+    btnStart.disabled = true;
 
   langIsEmptyMessage.remove();
   wrongNumMessage.remove();
@@ -836,6 +838,7 @@ deckDeleteWholeBtn.addEventListener('click', e => {
 
 btnDeleteCurLang.addEventListener('click', e => {
   e.preventDefault();
+  updateCardsNum('subtraction');
 
   const langForDeletionIndex = curDeck.languages.findIndex(
     lang => lang === capitalizeFirstLetter(curDeck.curLang)
@@ -859,7 +862,6 @@ btnDeleteCurLang.addEventListener('click', e => {
   displayListOfCards();
   makeCardsBtnsActive();
   updateCardsLangs();
-  updateCardsNum('subtraction');
 
   if (curDeck.languages.length === 0) {
     cardsSearch.remove();
