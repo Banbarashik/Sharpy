@@ -10,7 +10,7 @@ const deckOptions = document.querySelector('.deck--options');
 const deckLangsOptions = document.querySelector('.deck--languages-options');
 const orderInputs = document.querySelectorAll('input[name="order"]');
 const orderLabels = document.querySelectorAll('input[name="order"] + label');
-const deckDeleteCurLangBtn = document.querySelector('.deck--del--cur-lang');
+const btnDeleteCurLang = document.querySelector('.deck--del--cur-lang');
 const deckDeleteWholeBtn = document.querySelector('.deck--del--whole');
 const decksSearch = document.querySelector('.decks--search');
 const btnStart = document.querySelector('input[value="Start"]');
@@ -164,12 +164,16 @@ const getLI = function (target) {
 const disableBtnStartIfNoCards = deck =>
   (btnStart.disabled = deck.cards[deck.curLang].length === 0 ? true : false);
 
+const returnDecksIcon = () =>
+  [...decksList.children].find(deck => deck.dataset.deckName === curDeck.name);
+
+const updateCardsLangs = function () {
+  const cardsLangs = returnDecksIcon().querySelector('.deck--cards-langs');
+  cardsLangs.textContent = curDeck.languages.join(', ');
+};
+
 const updateCardsNum = function (operation) {
-  const decksIcons = [...decksList.children];
-  const curDeckIcon = decksIcons.find(
-    deck => deck.dataset.deckName === curDeck.name
-  );
-  const cardsNum = curDeckIcon.querySelector('.deck--cards-num');
+  const cardsNum = returnDecksIcon().querySelector('.deck--cards-num');
 
   if (operation === 'increment' || operation === 'decrement') {
     cardsNum.textContent =
@@ -574,7 +578,9 @@ const initDeck = function () {
       `<div class="deck--info">
         <p>Name: ${deck.name}</p>
         <p>Author: ${deck.author}</p>
-        <p>Languages: ${deck.languages.join(', ')}</p>
+        <p>Languages: <span class="deck--cards-langs">${deck.languages.join(
+          ', '
+        )}</span></p>
         <p>Cards: <span class="deck--cards-num">${cardsTotalNumber}</span></p>
        </div>
       `
@@ -828,14 +834,12 @@ deckDeleteWholeBtn.addEventListener('click', e => {
   btnAddNewCard.remove();
 });
 
-deckDeleteCurLangBtn.addEventListener('click', e => {
+btnDeleteCurLang.addEventListener('click', e => {
   e.preventDefault();
 
   const langForDeletionIndex = curDeck.languages.findIndex(
     lang => lang === capitalizeFirstLetter(curDeck.curLang)
   );
-
-  updateCardsNum('subtraction');
 
   curDeck.languages.splice(langForDeletionIndex, 1);
   delete curDeck.cards[curDeck.curLang];
@@ -854,6 +858,8 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
 
   displayListOfCards();
   makeCardsBtnsActive();
+  updateCardsLangs();
+  updateCardsNum('subtraction');
 
   if (curDeck.languages.length === 0) {
     cardsSearch.remove();
@@ -995,6 +1001,7 @@ addNewLangBtn.addEventListener('click', e => {
     displayListOfCards();
     makeCardsBtnsActive();
     deckLangsOptions.value = toNormalCase(curDeck.curLang);
+    updateCardsLangs();
 
     btnStart.disabled = true;
 
