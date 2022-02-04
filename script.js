@@ -260,6 +260,11 @@ const openDeckWindow = function (e, deck) {
   langIsEmptyMessage.remove();
   wrongNumMessage.remove();
   langInput.value = '';
+
+  numOfCardsShown = 1;
+  if (document.querySelector('.card--curNum'))
+    document.querySelector('.card--curNum').textContent = numOfCardsShown;
+  cardsNumBlock.remove();
 };
 
 // CREATE DECK'S OPTIONS
@@ -703,6 +708,10 @@ btnStart.addEventListener('click', e => {
 });
 
 btnNextCard.addEventListener('click', () => {
+  // if (numOfCardsShown === numToShow) {
+  //   // return;
+  // }
+
   numOfCardsShown++;
   if (numOfCardsShown > numToShow) {
     appMainArea.removeChild(document.querySelector('.card--container'));
@@ -711,6 +720,7 @@ btnNextCard.addEventListener('click', () => {
     numOfCardsShown = 1;
 
     document.querySelector('.card--curNum').textContent = 1;
+    cardsNumBlock.remove();
   } else {
     document.querySelector('.card--curNum').textContent = Number(
       ++document.querySelector('.card--curNum').textContent
