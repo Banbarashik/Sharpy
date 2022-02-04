@@ -50,11 +50,11 @@ cardsNumBlock.insertAdjacentHTML(
 const wrongNumMessage = document.createElement('p');
 wrongNumMessage.classList.add('wrong-num-message');
 wrongNumMessage.textContent =
-  'Number of cards should be greater than 0 and less than the total number of cards in the deck';
+  'Number of cards should be greater than 0 and less than the total number of cards in the deck.';
 
 const langIsEmptyMessage = document.createElement('p');
 langIsEmptyMessage.classList.add('lang-is-empty-message');
-langIsEmptyMessage.textContent = "The language field can't be empty";
+langIsEmptyMessage.textContent = "The language field can't be empty.";
 
 // State variables
 let curDeck;

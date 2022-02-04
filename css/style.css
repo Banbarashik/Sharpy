@@ -435,3 +435,17 @@ input[value='Start'] {
 
 .deck--err-message {
   font-size: 2rem; }
+
+.deck--language,
+.deck--option--cards-num {
+  position: relative; }
+
+.lang-is-empty-message,
+.wrong-num-message {
+  position: absolute;
+  left: 0;
+  transform: translateY(50%);
+  width: 19rem; }
+
+.wrong-num-message {
+  font-size: 1.5rem; }
