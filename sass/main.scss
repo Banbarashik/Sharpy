@@ -322,7 +322,7 @@ input[value='Start'] {
   );
 }
 
-.card--bside-separate::after {
+.card--bside-separate:not(.card--bside-separate.card--side-separate)::after {
   @include border-hiding-pseudo-elements(
     right,
     0.8rem,
@@ -345,7 +345,18 @@ input[value='Start'] {
 .card--create {
   display: none;
   flex-direction: column;
-  gap: 1rem;
+  gap: 3rem;
+
+  .card-add--deck-view {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+
+    input,
+    button {
+      width: 50%;
+    }
+  }
 }
 
 .card--create--cards-block {
@@ -373,7 +384,7 @@ input[value='Start'] {
 .card-q {
   text-align: center;
   resize: none;
-  width: 28rem;
+  width: 26rem;
   outline: none;
 }
 
