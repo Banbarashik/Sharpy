@@ -558,3 +558,35 @@ input[value='Start'] {
   font-size: 7rem;
   text-align: center;
 }
+
+.deck--create-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  width: 30rem;
+  padding: 2rem;
+  border-radius: 1rem;
+
+  background-color: var(--bg-color);
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    input:not(input[type='color']) {
+      width: 100%;
+      padding-left: 1rem;
+
+      font-size: 1.4rem;
+    }
+
+    input[type='color'] {
+      border-radius: 0;
+    }
+  }
+}
+.deck--err-message {
+  font-size: 2rem;
+}

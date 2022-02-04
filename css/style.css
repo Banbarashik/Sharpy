@@ -387,3 +387,25 @@ input[value='Start'] {
   background: none;
   font-size: 7rem;
   text-align: center; }
+
+.deck--create-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 30rem;
+  padding: 2rem;
+  border-radius: 1rem;
+  background-color: var(--bg-color); }
+  .deck--create-fields li {
+    display: flex;
+    align-items: center;
+    gap: 1rem; }
+    .deck--create-fields li input:not(input[type='color']) {
+      width: 100%;
+      padding-left: 1rem;
+      font-size: 1.4rem; }
+    .deck--create-fields li input[type='color'] {
+      border-radius: 0; }
+
+.deck--err-message {
+  font-size: 2rem; }
