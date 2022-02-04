@@ -334,13 +334,14 @@ input[value='Start'] {
 .decks--search {
   width: 35%;
   transition: 0.3s;
-  background-color: #999;
+  position: relative;
+  z-index: 1;
   cursor: pointer;
   height: 4rem;
   padding-left: 4rem;
   margin-bottom: 1rem;
   font-size: 1.6rem;
-  background: #999 url("../images/icons/search-outline.svg") 0.5rem center/2.8rem no-repeat; }
+  background: #b0b0b0 url("../images/icons/search-outline.svg") 0.5rem center/2.8rem no-repeat; }
 
 .decks--search:focus {
   width: 220%;

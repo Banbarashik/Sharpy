@@ -127,7 +127,18 @@ hatInTimeDeck.cards.russian = [
   new Card('На каком движке создан "A Hat in Time"?', 'Unreal Engine 3'),
 ];
 
-const decks = [skyrimDeck, hatInTimeDeck];
+let decks = [skyrimDeck, hatInTimeDeck];
+
+// store the library array in localStorage before unloading
+window.addEventListener('beforeunload', () =>
+  localStorage.setItem('decks', JSON.stringify(decks))
+);
+
+// check if the library is saved in localStorage, then add all books contained inside it
+if (localStorage.getItem('decks')) {
+  decks = JSON.parse(localStorage.getItem('decks'));
+  // goThroughLibrary();
+}
 
 function invertToBlackOrWhite(hex) {
   hex = hex.slice(1);
@@ -810,7 +821,7 @@ orderInputs.forEach(input => {
       new Card(q.textContent, a.textContent, img.value)
     );
 
-    q.textContent = a.value = img.value = '';
+    q.textContent = a.textContent = img.value = '';
 
     curDeck = decks[decks.length - 1];
 
@@ -973,7 +984,7 @@ btnDeleteCurLang.addEventListener('click', e => {
       curDeck.cards[curDeck.curLang].splice(
         +btnsBlock.dataset.cardI,
         0,
-        new Card(q.textContent, a.value, img.value)
+        new Card(q.textContent, a.textContent, img.value)
       );
 
       disableFirstAndLastBtns();

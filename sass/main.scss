@@ -475,8 +475,8 @@ input[value='Start'] {
   justify-self: center;
 }
 
-@mixin input_icon($img) {
-  background: #999 url($img) 0.5rem center/2.8rem no-repeat;
+@mixin input_icon($bgcolor, $img) {
+  background: $bgcolor url($img) 0.5rem center/2.8rem no-repeat;
 }
 
 @mixin searchbars($mb) {
@@ -490,12 +490,14 @@ input[value='Start'] {
 .decks--search {
   width: 35%;
   transition: 0.3s;
-  background-color: #999;
+
+  position: relative;
+  z-index: 1;
 
   cursor: pointer;
 
   @include searchbars(1rem);
-  @include input_icon('../images/icons/search-outline.svg');
+  @include input_icon(#b0b0b0, '../images/icons/search-outline.svg');
 }
 .decks--search:focus {
   width: 220%;
@@ -504,7 +506,7 @@ input[value='Start'] {
 
 .cards--search {
   @include searchbars(2rem);
-  @include input_icon('../images/icons/cards.svg');
+  @include input_icon(#999, '../images/icons/cards.svg');
 }
 
 .cards--add-new {
