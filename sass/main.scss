@@ -365,25 +365,43 @@ input[value='Start'] {
 }
 
 .card--side-separate {
-  height: 20rem;
-}
-
-.card--bside-separate {
+  display: flex;
+  justify-content: center;
   align-items: center;
+  // text-align: center;
+
+  height: 20rem;
+
+  // background-color: #ccc;
 }
 
-.card--bside-separate input {
+.card--create-img,
+.card--input-img {
+  position: absolute;
+  top: 1rem;
+  left: 2rem;
+
+  width: 80%;
+
   background-color: transparent;
   border: none;
   outline: none;
   font-size: inherit;
-
-  width: 10rem;
 }
 
-.card-q {
+.card--fside-q,
+.card--bside-a {
+  word-break: break-word;
+}
+
+.card--bside-separate {
+  padding: 2rem;
+  border-radius: 1.2rem;
+}
+
+.card-q,
+.card-a {
   text-align: center;
-  resize: none;
   width: 26rem;
   outline: none;
 }
@@ -442,10 +460,19 @@ input[value='Start'] {
 }
 
 .card--img {
+  justify-self: end;
+
   width: 12rem;
   height: 12rem;
+  margin-left: 3rem;
   border-radius: 1rem;
-  justify-self: end;
+}
+
+.card--bside-no-img {
+  grid-row: 1 / -1;
+  grid-column: 1 / -1;
+  align-self: center;
+  justify-self: center;
 }
 
 @mixin input_icon($img) {

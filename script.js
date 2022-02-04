@@ -161,6 +161,11 @@ const getLI = function (target) {
   }
 };
 
+const centerCardTextIfNoImage = block => {
+  if (!block.querySelector('.card--img'))
+    block.querySelector('.card--bside-a').classList.add('card--bside-no-img');
+};
+
 const disableBtnStartIfNoCards = deck =>
   (btnStart.disabled = deck.cards[deck.curLang].length === 0 ? true : false);
 
@@ -550,6 +555,11 @@ const displayListOfCards = function () {
     });
   }
 
+  const cardsBlocks =
+    listOfCardsContainer.querySelectorAll('.card--sides-block');
+
+  cardsBlocks.forEach(block => centerCardTextIfNoImage(block));
+
   cardsDnD();
 };
 
@@ -797,7 +807,7 @@ orderInputs.forEach(input => {
     e.preventDefault();
 
     newDeck.cards[lang.toLowerCase()].push(
-      new Card(q.textContent, a.value, img.value)
+      new Card(q.textContent, a.textContent, img.value)
     );
 
     q.textContent = a.value = img.value = '';
@@ -875,12 +885,14 @@ btnDeleteCurLang.addEventListener('click', e => {
       'beforeend',
       `<li class="card--sides-block card--not-created">
       <div class="card--fside-separate card--side-separate">
-        <div class="card-q card--input-q" contenteditable="true" placeholder="Enter front-side text">
-        </div>
+        <div class="card-q card--input-q" contenteditable="true"
+        placeholder="Enter front-side text"></div>
       </div>
       <div class="card--bside-separate card--side-separate">
-        <input type="text" class="card-a card--input-a" />
-        <input type="url" class="card--input-img" placeholder="https://imgur.com" />
+        <div class="card-q card--input-a" contenteditable="true"
+        placeholder="Enter back-side text"></div>
+        <input type="url" class="card--input-img"
+        placeholder="https://imgur.com" />
       </div>
       <div class="card--btns">
         <button class="card--btn-check">
@@ -914,7 +926,7 @@ btnDeleteCurLang.addEventListener('click', e => {
           <p class="card--fside-q">${q.textContent}</p>
         </div>
         <div class="card--bside-separate">
-          <p class="card--bside-a">${a.value}</p>
+          <p class="card--bside-a">${a.textContent}</p>
           ${
             img.value
               ? `<img class="card--img" src="${img.value}" draggable="false">`
@@ -951,6 +963,8 @@ btnDeleteCurLang.addEventListener('click', e => {
           </button>
         </div>`
       );
+
+      centerCardTextIfNoImage(curCardBlock);
 
       const btnsBlock = curCardBlock.querySelector('.card--btns');
 
