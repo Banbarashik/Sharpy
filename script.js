@@ -8,8 +8,9 @@ const endMessage = document.querySelector('.app--end-message');
 const decksList = document.querySelector('.list-of-decks');
 const deckOptions = document.querySelector('.deck--options');
 const deckLangsOptions = document.querySelector('.deck--languages-options');
-const deckModesList = document.querySelector('.deck--modes-list');
-const deckDeleteCurLangBtn = document.querySelector('.deck--del--cur-lang');
+const orderInputs = document.querySelectorAll('input[name="order"]');
+const orderLabels = document.querySelectorAll('input[name="order"] + label');
+const btnDeleteCurLang = document.querySelector('.deck--del--cur-lang');
 const deckDeleteWholeBtn = document.querySelector('.deck--del--whole');
 const decksSearch = document.querySelector('.decks--search');
 const btnStart = document.querySelector('input[value="Start"]');
@@ -18,6 +19,13 @@ const createNewDeckIcon = document.querySelector('.deck--item-create');
 const createNewCardWindow = document.querySelector('.card--create');
 const addNewLangBtn = document.querySelector('.lang--add-btn');
 
+const langInput = document.getElementById('lang_input');
+langInput.addEventListener('keydown', e => {
+  if (e.key >= 0 || e.key <= 0) e.preventDefault();
+});
+
+const numToShowInput = document.getElementById('cards_num_input');
+
 // Creating DOM elements
 const btnNextCard = document.createElement('button');
 btnNextCard.classList.add('btn--next-card');
@@ -25,24 +33,45 @@ btnNextCard.textContent = 'Next card';
 
 const btnAddNewCard = document.createElement('button');
 btnAddNewCard.classList.add('cards--add-new');
-btnAddNewCard.textContent = 'Add a new card';
+btnAddNewCard.textContent = '+';
 
 const cardsSearch = document.createElement('input');
 cardsSearch.setAttribute('type', 'text');
-cardsSearch.setAttribute('placeholder', 'search for a card...');
+cardsSearch.setAttribute('placeholder', 'Search for a card');
+cardsSearch.classList.add('cards--search');
+
+const cardsNumBlock = document.createElement('p');
+cardsNumBlock.classList.add('card--state-nums');
+cardsNumBlock.insertAdjacentHTML(
+  'beforeend',
+  `<span class="card--curNum">1</span>/<span class="cards--totalNum"></span>`
+);
+
+const wrongNumMessage = document.createElement('p');
+wrongNumMessage.classList.add('wrong-num-message');
+wrongNumMessage.textContent =
+  'Number of cards should be greater than 0 and less than the total number of cards in the deck.';
+
+const langIsEmptyMessage = document.createElement('p');
+langIsEmptyMessage.classList.add('lang-is-empty-message');
+langIsEmptyMessage.textContent = "The language field can't be empty.";
 
 // State variables
 let curDeck;
-let order = 'random';
+let numToShow;
+let numOfCardsShown = 1;
 
 class Deck {
-  constructor(name, author, languages) {
+  constructor(name, author, languages, color) {
     this.name = name;
     this.author = author;
     this.languages = languages;
     this.modes = ['Flashcards', 'Multiple choice'];
     this.cards = {};
-    this.curLang = null;
+    this.curLang = '';
+    this.order = 'random';
+
+    this.iconColor = color;
   }
 }
 
@@ -56,7 +85,12 @@ class Card {
   }
 }
 
-const skyrimDeck = new Deck('Skyrim', 'Wadim', ['Russian', 'English']);
+const skyrimDeck = new Deck(
+  'Skyrim',
+  'Wadim',
+  ['Russian', 'English'],
+  '#999999'
+);
 skyrimDeck.cards.english = [
   new Card('What is the name of the main character?', 'Dovahkiin'),
   new Card('When the game was released?', '2011'),
@@ -68,7 +102,12 @@ skyrimDeck.cards.russian = [
   new Card('Каков максимальный уровень игрока?', '81'),
 ];
 
-const hatInTimeDeck = new Deck('A Hat in Time', 'Lexa', ['Russian', 'English']);
+const hatInTimeDeck = new Deck(
+  'A Hat in Time',
+  'Lexa',
+  ['Russian', 'English'],
+  '#999999'
+);
 hatInTimeDeck.cards.english = [
   new Card('Who is the main antagonist?', 'Mustache girl'),
   new Card('When the game was released?', '2017'),
@@ -88,7 +127,28 @@ hatInTimeDeck.cards.russian = [
   new Card('На каком движке создан "A Hat in Time"?', 'Unreal Engine 3'),
 ];
 
-const decks = [skyrimDeck, hatInTimeDeck];
+let decks = [skyrimDeck, hatInTimeDeck];
+
+// store the library array in localStorage before unloading
+window.addEventListener('beforeunload', () =>
+  localStorage.setItem('decks', JSON.stringify(decks))
+);
+
+// check if the library is saved in localStorage, then add all books contained inside it
+if (localStorage.getItem('decks')) {
+  decks = JSON.parse(localStorage.getItem('decks'));
+  // goThroughLibrary();
+}
+
+function invertToBlackOrWhite(hex) {
+  hex = hex.slice(1);
+
+  const r = parseInt(hex.slice(0, 2), 16),
+    g = parseInt(hex.slice(2, 4), 16),
+    b = parseInt(hex.slice(4, 6), 16);
+
+  return r * 0.299 + g * 0.587 + b * 0.114 > 186 ? '#000000' : '#FFFFFF';
+}
 
 function capitalizeFirstLetter(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -112,12 +172,24 @@ const getLI = function (target) {
   }
 };
 
+const centerCardTextIfNoImage = block => {
+  if (!block.querySelector('.card--img'))
+    block.querySelector('.card--bside-a').classList.add('card--bside-no-img');
+};
+
+const disableBtnStartIfNoCards = deck =>
+  (btnStart.disabled = deck.cards[deck.curLang].length === 0 ? true : false);
+
+const returnDecksIcon = () =>
+  [...decksList.children].find(deck => deck.dataset.deckName === curDeck.name);
+
+const updateCardsLangs = function () {
+  const cardsLangs = returnDecksIcon().querySelector('.deck--cards-langs');
+  cardsLangs.textContent = curDeck.languages.join(', ');
+};
+
 const updateCardsNum = function (operation) {
-  const decksIcons = [...decksList.children];
-  const curDeckIcon = decksIcons.find(
-    deck => deck.dataset.deckName === curDeck.name
-  );
-  const cardsNum = curDeckIcon.querySelector('.deck--cards-num');
+  const cardsNum = returnDecksIcon().querySelector('.deck--cards-num');
 
   if (operation === 'increment' || operation === 'decrement') {
     cardsNum.textContent =
@@ -133,6 +205,9 @@ const updateCardsNum = function (operation) {
 const openDeckWindow = function (e, deck) {
   e.preventDefault();
 
+  appMainArea.classList.remove('closed');
+  appMainArea.classList.add('opened');
+
   curDeck = deck;
 
   if (deck.curLang && deck.languages.length > 1)
@@ -147,7 +222,6 @@ const openDeckWindow = function (e, deck) {
 
   createNewCardWindow.style.display = 'none';
   document.querySelector('.deck--create').style.display = 'none';
-
   startMessage.style.display = endMessage.style.display = 'none';
   deckOptions.style.display = 'grid';
 
@@ -157,12 +231,40 @@ const openDeckWindow = function (e, deck) {
   deck.curLang = deck.curLang ? deck.curLang : langOpt.value.toLowerCase();
   langOpt.value = capitalizeFirstLetter(deck.curLang);
 
+  orderInputs.forEach(input => {
+    const label = input.nextElementSibling;
+
+    if (deck.order === input.value) {
+      input.setAttribute('checked', '');
+      label.classList.add('checked');
+    } else {
+      input.removeAttribute('checked');
+      label.classList.remove('checked');
+    }
+  });
+
   if (deck.languages.length > 0) {
     displayListOfCards();
-    makeCardsMovableByBtns();
+    makeCardsBtnsActive();
+    btnStart.disabled = false;
   } else {
+    btnStart.disabled = true;
+    cardsSearch.remove();
+    btnAddNewCard.remove();
     document.querySelector('.cards-list-container').remove();
   }
+
+  if (deck.curLang && deck.cards[deck.curLang].length === 0)
+    btnStart.disabled = true;
+
+  langIsEmptyMessage.remove();
+  wrongNumMessage.remove();
+  langInput.value = '';
+
+  numOfCardsShown = 1;
+  if (document.querySelector('.card--curNum'))
+    document.querySelector('.card--curNum').textContent = numOfCardsShown;
+  cardsNumBlock.remove();
 };
 
 // CREATE DECK'S OPTIONS
@@ -202,7 +304,7 @@ const disableFirstAndLastBtns = function () {
   });
 };
 
-const makeCardsMovableByBtns = function () {
+const makeCardsBtnsActive = function () {
   const currentList = document.querySelector('.cards-list-container');
 
   const moveArrElem = function (arr, fromIndex, toIndex) {
@@ -281,6 +383,7 @@ const makeCardsMovableByBtns = function () {
       else {
         cardBlock.remove();
         updateCardsNum('decrement');
+        disableBtnStartIfNoCards(curDeck);
       }
 
       updateIndices();
@@ -418,10 +521,11 @@ const displayListOfCards = function () {
   cardsBlockWrapper.prepend(cardsSearch);
   cardsBlockWrapper.appendChild(btnAddNewCard);
 
-  curDeck.cards[curDeck.curLang].forEach(card => {
-    listOfCardsContainer.insertAdjacentHTML(
-      'beforeend',
-      `<li class="card--sides-block" draggable="true">
+  if (Object.keys(curDeck.cards).length > 0) {
+    curDeck.cards[curDeck.curLang].forEach(card => {
+      listOfCardsContainer.insertAdjacentHTML(
+        'beforeend',
+        `<li class="card--sides-block" draggable="true">
         <div class="card--fside-separate">
           <p class="card--fside-q">${card.q}</p>
         </div>
@@ -463,8 +567,14 @@ const displayListOfCards = function () {
           </button>
         </div>
        </li>`
-    );
-  });
+      );
+    });
+  }
+
+  const cardsBlocks =
+    listOfCardsContainer.querySelectorAll('.card--sides-block');
+
+  cardsBlocks.forEach(block => centerCardTextIfNoImage(block));
 
   cardsDnD();
 };
@@ -479,7 +589,9 @@ const initDeck = function () {
     deckItemEl.classList.add('deck--item');
     decksList.appendChild(deckItemEl);
 
-    deckItemEl.textContent = deck.name.slice(0, 1);
+    deckItemEl.textContent = deck.name.slice(0, 1).toUpperCase();
+    deckItemEl.style.backgroundColor = deck.iconColor;
+    deckItemEl.style.color = invertToBlackOrWhite(deck.iconColor);
 
     deckItemEl.dataset.deckName = deck.name;
 
@@ -493,7 +605,9 @@ const initDeck = function () {
       `<div class="deck--info">
         <p>Name: ${deck.name}</p>
         <p>Author: ${deck.author}</p>
-        <p>Languages: ${deck.languages.join(', ')}</p>
+        <p>Languages: <span class="deck--cards-langs">${deck.languages.join(
+          ', '
+        )}</span></p>
         <p>Cards: <span class="deck--cards-num">${cardsTotalNumber}</span></p>
        </div>
       `
@@ -506,11 +620,11 @@ const initDeck = function () {
 initDeck();
 
 // Function creating a card HTML element
-const displayCard = function (deck) {
-  const deckNotShownYet = deck.filter(card => card.shown === false);
+const displayCard = function (cards) {
+  const cardsNotShownYet = cards.filter(card => card.shown === false);
 
   // END OF A DECK
-  if (deckNotShownYet.length === 0) {
+  if (cardsNotShownYet.length === 0) {
     appMainArea.removeChild(document.querySelector('.card--container'));
     appMainArea.removeChild(btnNextCard);
 
@@ -527,26 +641,31 @@ const displayCard = function (deck) {
       `<div class="card--container">
           <article class="card">
             <div class="card--fside">
-              <p class="card--fside-q">${deckNotShownYet[card].q}</p>
+              <p class="card--fside-q">${cardsNotShownYet[card].q}</p>
             </div>
             <div class="card--bside">
-              <p class="card--bside-a">${deckNotShownYet[card].a}</p>
+              <p class="card--bside-a">${cardsNotShownYet[card].a}</p>
+              ${
+                cardsNotShownYet[card].img
+                  ? `<img class="card--img" src="${cardsNotShownYet[card].img}">`
+                  : ''
+              }
             </div>
           </article>
        </div>`
     );
 
-    deckNotShownYet[card].shown = true;
+    cardsNotShownYet[card].shown = true;
   };
 
   if (document.querySelector('.card--container')) {
     appMainArea.removeChild(document.querySelector('.card--container'));
   }
 
-  if (order === 'random') {
-    const randomCard = Math.floor(Math.random() * deckNotShownYet.length);
+  if (curDeck.order === 'random') {
+    const randomCard = Math.floor(Math.random() * cardsNotShownYet.length);
     generateCardEl(randomCard);
-  } else if (order === 'original') {
+  } else if (curDeck.order === 'original') {
     let i;
     if (i === undefined) i = 0;
     else i++;
@@ -563,18 +682,52 @@ const displayCard = function (deck) {
 btnStart.addEventListener('click', e => {
   e.preventDefault();
 
-  document.querySelector('.cards-list-container').remove();
+  const numOptionsBlock = document.querySelector('.deck--option--cards-num');
+  const numToShowValue = +numToShowInput.value;
 
-  deckOptions.style.display = 'none';
+  if (
+    numToShowValue > 0 &&
+    numToShowValue <= curDeck.cards[curDeck.curLang].length
+  ) {
+    document.querySelector('.cards-list-container').remove();
 
-  appMainArea.appendChild(btnNextCard);
+    deckOptions.style.display = 'none';
 
-  displayCard(curDeck.cards[curDeck.curLang]);
+    numToShow = numToShowValue;
+
+    appMainArea.appendChild(btnNextCard);
+    appMainArea.appendChild(cardsNumBlock);
+    document.querySelector('.cards--totalNum').textContent = numToShow;
+
+    displayCard(curDeck.cards[curDeck.curLang]);
+
+    wrongNumMessage.remove();
+    cardsSearch.remove();
+    btnAddNewCard.remove();
+  } else numOptionsBlock.appendChild(wrongNumMessage);
 });
 
-btnNextCard.addEventListener('click', () =>
-  displayCard(curDeck.cards[curDeck.curLang])
-);
+btnNextCard.addEventListener('click', () => {
+  // if (numOfCardsShown === numToShow) {
+  //   // return;
+  // }
+
+  numOfCardsShown++;
+  if (numOfCardsShown > numToShow) {
+    appMainArea.removeChild(document.querySelector('.card--container'));
+    appMainArea.removeChild(btnNextCard);
+    endMessage.style.display = 'block';
+    numOfCardsShown = 1;
+
+    document.querySelector('.card--curNum').textContent = 1;
+    cardsNumBlock.remove();
+  } else {
+    document.querySelector('.card--curNum').textContent = Number(
+      ++document.querySelector('.card--curNum').textContent
+    );
+    displayCard(curDeck.cards[curDeck.curLang]);
+  }
+});
 
 document
   .querySelector('.deck--languages-options')
@@ -582,14 +735,22 @@ document
     curDeck.curLang = e.target.value.toLowerCase();
 
     displayListOfCards();
-    makeCardsMovableByBtns();
+    makeCardsBtnsActive();
+    disableBtnStartIfNoCards(curDeck);
   });
 
-document
-  .getElementsByName('order')
-  .forEach(input =>
-    input.addEventListener('input', e => (order = e.target.value))
-  );
+orderInputs.forEach(input => {
+  const label = input.nextElementSibling;
+  input.addEventListener('click', () => {
+    curDeck.order = input.value;
+
+    orderInputs.forEach(input => input.removeAttribute('checked'));
+    input.setAttribute('checked', '');
+
+    orderLabels.forEach(label => label.classList.remove('checked'));
+    label.classList.add('checked');
+  });
+});
 
 (function () {
   // DECK
@@ -597,6 +758,7 @@ document
   const newDeckName = document.getElementById('deck_name');
   const newDeckAuthor = document.getElementById('deck_author');
   const newDeckLang = document.getElementById('deck_lang');
+  const newDeckColor = document.getElementById('deck_icon_color');
   const errMessage = document.querySelector('.deck--err-message');
   const createNewDeckBtn = document.querySelector('.deck--create-btn');
 
@@ -614,11 +776,13 @@ document
 
   createNewDeckIcon.addEventListener('click', () => {
     deckOptions.style.display = 'none';
-    if (document.querySelector('.cards-list-container'))
-      document.querySelector('.cards-list-container').remove();
+    const existingBlockWrapper = document.querySelector('.cards-block-wrapper');
+    if (existingBlockWrapper) existingBlockWrapper.remove();
 
     startMessage.style.display = 'none';
     createNewCardWindow.style.display = 'none';
+    appMainArea.classList.remove('closed');
+    appMainArea.classList.add('opened');
 
     deckCreateWindow.style.display = 'flex';
 
@@ -639,7 +803,12 @@ document
 
     lang = newDeckLang.value;
 
-    newDeck = new Deck(newDeckName.value, newDeckAuthor.value, [lang]);
+    newDeck = new Deck(
+      newDeckName.value,
+      newDeckAuthor.value,
+      [lang],
+      newDeckColor.value
+    );
     newDeck.curLang = lang.toLowerCase();
     newDeck.cards[lang.toLowerCase()] = [];
 
@@ -659,10 +828,14 @@ document
     e.preventDefault();
 
     newDeck.cards[lang.toLowerCase()].push(
-      new Card(q.textContent, a.value, img.value)
+      new Card(q.textContent, a.textContent, img.value)
     );
 
-    q.textContent = a.value = img.value = '';
+    q.textContent = a.textContent = img.value = '';
+
+    curDeck = decks[decks.length - 1];
+
+    updateCardsNum('increment');
   });
 
   viewCreatedDeck.addEventListener('click', e => {
@@ -684,16 +857,21 @@ deckDeleteWholeBtn.addEventListener('click', e => {
 
   deckOptions.style.display = 'none';
   document.querySelector('.cards-list-container').remove();
+
+  appMainArea.classList.remove('opened');
+  appMainArea.classList.add('closed');
+  startMessage.style.display = 'block';
+  cardsSearch.remove();
+  btnAddNewCard.remove();
 });
 
-deckDeleteCurLangBtn.addEventListener('click', e => {
+btnDeleteCurLang.addEventListener('click', e => {
   e.preventDefault();
+  updateCardsNum('subtraction');
 
   const langForDeletionIndex = curDeck.languages.findIndex(
     lang => lang === capitalizeFirstLetter(curDeck.curLang)
   );
-
-  updateCardsNum('subtraction');
 
   curDeck.languages.splice(langForDeletionIndex, 1);
   delete curDeck.cards[curDeck.curLang];
@@ -704,17 +882,21 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
 
   if (curDeck.languages.length > 0) {
     curDeck.curLang = curDeck.languages[0].toLowerCase();
+  } else {
+    curDeck.curLang = '';
   }
 
   deckLangsOptions.value = capitalizeFirstLetter(curDeck.curLang);
 
-  console.log(curDeck, curDeck.curLang, curDeck.languages);
+  displayListOfCards();
+  makeCardsBtnsActive();
+  updateCardsLangs();
 
-  if (curDeck.languages.length > 0) {
-    displayListOfCards();
-    makeCardsMovableByBtns();
-  } else {
-    document.querySelector('.cards-list-container').remove();
+  if (curDeck.languages.length === 0) {
+    cardsSearch.remove();
+    btnAddNewCard.remove();
+
+    btnStart.disabled = true;
   }
 });
 
@@ -724,12 +906,14 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
       'beforeend',
       `<li class="card--sides-block card--not-created">
       <div class="card--fside-separate card--side-separate">
-        <div class="card-q card--input-q" contenteditable="true" placeholder="Enter front-side text">
-        </div>
+        <div class="card-q card--input-q" contenteditable="true"
+        placeholder="Enter front-side text"></div>
       </div>
       <div class="card--bside-separate card--side-separate">
-        <input type="text" class="card-a card--input-a" />
-        <input type="url" class="card--input-img" placeholder="https://imgur.com" />
+        <div class="card-q card--input-a" contenteditable="true"
+        placeholder="Enter back-side text"></div>
+        <input type="url" class="card--input-img"
+        placeholder="https://imgur.com" />
       </div>
       <div class="card--btns">
         <button class="card--btn-check">
@@ -763,7 +947,7 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
           <p class="card--fside-q">${q.textContent}</p>
         </div>
         <div class="card--bside-separate">
-          <p class="card--bside-a">${a.value}</p>
+          <p class="card--bside-a">${a.textContent}</p>
           ${
             img.value
               ? `<img class="card--img" src="${img.value}" draggable="false">`
@@ -801,6 +985,8 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
         </div>`
       );
 
+      centerCardTextIfNoImage(curCardBlock);
+
       const btnsBlock = curCardBlock.querySelector('.card--btns');
 
       updateIndices();
@@ -808,10 +994,11 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
       curDeck.cards[curDeck.curLang].splice(
         +btnsBlock.dataset.cardI,
         0,
-        new Card(q.textContent, a.value, img.value)
+        new Card(q.textContent, a.textContent, img.value)
       );
 
       disableFirstAndLastBtns();
+      btnStart.disabled = false;
 
       updateCardsNum('increment');
     }
@@ -821,17 +1008,40 @@ deckDeleteCurLangBtn.addEventListener('click', e => {
 addNewLangBtn.addEventListener('click', e => {
   e.preventDefault();
 
-  const langsSelectList = document.querySelector('.deck--languages-options');
-  const langInput = document.getElementById('lang_input');
-  const newLang = document.createElement('option');
-  newLang.textContent = toNormalCase(langInput.value);
+  const langBlock = document.querySelector('.deck--language');
 
-  curDeck.languages.push(newLang.textContent);
-  curDeck.cards[newLang.textContent.toLowerCase()] = [];
+  if (langInput.value !== '') {
+    if (curDeck.languages.length === 0) {
+      const cardsListWrapper = document.querySelector('.cards-block-wrapper');
 
-  langsSelectList.add(newLang);
+      cardsListWrapper.prepend(cardsSearch);
+      cardsListWrapper.appendChild(btnAddNewCard);
+    }
 
-  langInput.value = '';
+    const langsSelectList = document.querySelector('.deck--languages-options');
+
+    const newLang = document.createElement('option');
+    newLang.textContent = toNormalCase(langInput.value);
+
+    curDeck.languages.push(newLang.textContent);
+    curDeck.cards[newLang.textContent.toLowerCase()] = [];
+
+    langsSelectList.add(newLang);
+
+    langInput.value = '';
+
+    // set the newly created lang as a curLang
+    curDeck.curLang = newLang.textContent.toLowerCase();
+
+    displayListOfCards();
+    makeCardsBtnsActive();
+    deckLangsOptions.value = toNormalCase(curDeck.curLang);
+    updateCardsLangs();
+
+    btnStart.disabled = true;
+
+    langIsEmptyMessage.remove();
+  } else langBlock.appendChild(langIsEmptyMessage);
 });
 
 decksSearch.addEventListener('keyup', () => {
@@ -867,7 +1077,7 @@ cardsSearch.addEventListener('keyup', () => {
 });
 
 appSidebar.addEventListener('mousemove', e => {
-  const target = e.target.closest('.deck--item:not(.deck--item-create)');
+  const target = e.target.closest('.deck--item');
 
   if (target) {
     const deckInfoBlock = target.querySelector('.deck--info');

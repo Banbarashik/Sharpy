@@ -14,14 +14,19 @@
         <input
           class="decks--search"
           type="text"
-          placeholder="Search for a deck..."
+          placeholder="Search for a deck"
         />
         <ul class="list-of-decks">
-          <li class="deck--item deck--item-create">C</li>
+          <li class="deck--item deck--item-create">
+            C
+            <div class="deck--info">Create a deck</div>
+          </li>
         </ul>
       </div>
-      <div class="app--main-area">
-        <p class="app--start-message">Choose a deck to learn.</p>
+      <div class="app--main-area closed">
+        <p class="app--start-message">
+          Choose a deck to learn or create a new one.
+        </p>
         <form class="deck--options">
           <button class="deck--del--cur-lang">
             Delete the current language
@@ -29,14 +34,32 @@
           <button class="deck--del--whole">Delete the whole deck</button>
           <div class="deck--language">
             <h3>Language</h3>
-            <label for="lang" class="lang--label">Choose a language:</label>
+            <label for="lang" class="lang--label">Choose a language</label>
             <select id="lang" class="deck--languages-options"></select>
-            <label for="lang_input" class="lang--add-label"
-              >Add a new language:</label
-            >
-            <div>
-              <input type="text" id="lang_input" />
-              <button class="lang--add-btn">Add</button>
+            <label for="lang_input">or add new</label>
+            <div class="lang-add-block">
+              <input
+                type="text"
+                id="lang_input"
+                placeholder="e.g. Spanish"
+              /><button class="lang--add-btn">
+                <!-- Add -->
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="ionicon"
+                  viewBox="0 0 512 512"
+                >
+                  <title>Add</title>
+                  <path
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="32"
+                    d="M256 112v288M400 256H112"
+                  />
+                </svg>
+              </button>
             </div>
           </div>
           <div class="deck--cards-order">
@@ -48,9 +71,11 @@
                   name="order"
                   id="order_random"
                   value="random"
-                  checked=""
+                  checked
                 />
-                <label for="order_random">Random</label>
+                <label for="order_random" class="order-random-label checked"
+                  >Random</label
+                >
               </li>
               <li>
                 <input
@@ -59,32 +84,37 @@
                   id="order_original"
                   value="original"
                 />
-                <label for="order_original">Original</label>
+                <label for="order_original" class="order-original-label"
+                  >Original</label
+                >
               </li>
             </ul>
           </div>
           <div class="deck--option--cards-num">
-            <label for="cards_num_input">Set num of cards</label
-            ><input type="number" id="cards_num_input" />
+            <label for="cards_num_input">Number of cards</label
+            ><input type="number" id="cards_num_input" min="1" value="1" />
           </div>
           <input type="submit" value="Start" />
         </form>
 
         <!-- DECK -->
         <form class="deck--create">
-          <p>Deck</p>
-          <ul>
+          <ul class="deck--create-fields">
             <li>
-              <label for="deck_name">Name:</label>
-              <input type="text" id="deck_name" />
+              <label for="deck_name">Name</label>
+              <input type="text" id="deck_name" placeholder="World capitals" />
             </li>
             <li>
-              <label for="deck_author">Author:</label>
-              <input type="text" id="deck_author" />
+              <label for="deck_author">Author</label>
+              <input type="text" id="deck_author" placeholder="Leha" />
             </li>
             <li>
-              <label for="deck_lang">Language:</label>
-              <input type="text" id="deck_lang" />
+              <label for="deck_lang">Language</label>
+              <input type="text" id="deck_lang" placeholder="Russian" />
+            </li>
+            <li>
+              <label for="deck_icon_color">Icon color</label>
+              <input type="color" id="deck_icon_color" />
             </li>
             <input
               type="submit"
@@ -92,11 +122,10 @@
               value="Create a new deck"
             />
           </ul>
-          <p class="deck--err-message">You should fill all the fields</p>
+          <p class="deck--err-message">You should fill all the fields.</p>
         </form>
 
         <form class="card--create">
-          <p>Cards</p>
           <ul class="card--create--cards-block">
             <li class="card--fside-separate card--side-separate">
               <div
@@ -106,20 +135,28 @@
               ></div>
             </li>
             <li class="card--bside-separate card--side-separate">
-              <input type="text" class="card-a card--create-a" />
+              <!-- <input type="text" class="card-a card--create-a" />
+               -->
               <input
                 type="url"
                 class="card--create-img"
                 placeholder="https://imgur.com"
               />
+              <div
+                class="card-a card--create-a"
+                contenteditable="true"
+                placeholder="Enter back-side text"
+              ></div>
             </li>
           </ul>
-          <input
-            type="submit"
-            class="deck--add-card-btn"
-            value="Add a new card"
-          />
-          <button class="card--view-created-deck">View the deck</button>
+          <div class="card-add--deck-view">
+            <input
+              type="submit"
+              class="deck--add-card-btn"
+              value="Add the card to the deck"
+            />
+            <button class="card--view-created-deck">View the deck</button>
+          </div>
         </form>
 
         <p class="app--end-message">
